@@ -1,7 +1,30 @@
 import os
 from dotenv import load_dotenv
+from flask import Flask, render_template, redirect, url_for, flash
+from forms import ContactForm
+from notify import Notify
 
-from flask import Flask, render_template
+projects = [
+
+    {
+        "title": "Weather App",
+        "description": "Flask weather application",
+        "image": "project1.png",
+        "github": "https://github.com/prxfsk17",
+        "slug": "weather-app"
+    },
+
+    {
+        "title": "Telegram Bot",
+        "description": "Telegram bot",
+        "image": "project2.png",
+        "github": "https://github.com/prxfsk17",
+        "slug": "telegram-bot"
+    }
+
+]
+
+notifier = Notify()
 
 load_dotenv()
 app = Flask(__name__)
@@ -13,7 +36,39 @@ def home():
 
 @app.route("/portfolio")
 def portfolio():
-    return render_template("portfolio.html")
+    return render_template("portfolio.html", projects=projects)
+
+@app.route("/project/<slug>")
+def project_page(slug):
+
+    project = None
+    for p in projects:
+        if p["slug"] == slug:
+            project = p
+            break
+    return render_template("project.html", project=project)
+
+@app.route("/demo/weather-app")
+def weather_demo():
+    return render_template("demo/weather.html")
+
+@app.route("/demo/telegram-bot")
+def telegram_demo():
+    return render_template("demo/telegram.html")
+
+@app.route("/contact", methods=["POST", "GET"])
+def contact():
+    form = ContactForm()
+
+    if form.validate_on_submit():
+        result = notifier.send_message(
+            form.email.data,
+            form.subject.data,
+            form.message.data
+        )
+        flash(result)
+        return redirect(url_for("contact"))
+    return render_template("contact.html", form=form)
 
 if __name__ == "__main__":
     app.run(debug=True)

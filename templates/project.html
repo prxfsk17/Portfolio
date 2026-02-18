@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ project.title }}
+{% endblock %}
+
+{% block content %}
+<h1>{{ project.title }}</h1>
+<p>{{ project.description }}</p>
+
+<a href="{{ project.github }}" class="btn btn-dark">GitHub</a>
+<hr>
+
+<h3>Live Demo:</h3>
+<a href="/demo/{{ project.slug }}" class="btn btn-primary">Open Demo</a>
+{% endblock %}
