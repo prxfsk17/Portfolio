@@ -5,10 +5,118 @@ About me
 {% endblock %}
 
 {% block content %}
-<h1>About me</h1>
-<p>
-    Hello! My name is Aliaksandr.
-    I am a Python developer.
-</p>
+<div class="about-container">
+    <div class="about-header">
+        <h1 class="about-title">About me</h1>
+    </div>
 
+    <div class="about-content">
+        <div class="profile-section">
+            <div class="profile-icon">👨‍💻</div>
+            <p class="intro">
+                <span class="greeting">Hello! I'm</span>
+                <span class="name">Haiko Aliaksandr</span><br>
+                <span class="details">21-year-old BSUIR graduate (2025) with a Bachelor's in Software Engineering</span>
+            </p>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="card-icon">💼</div>
+                <h3>Python Experience</h3>
+                <p>
+                    I'm particularly passionate about <span class="highlight">web development</span> and also very
+                    interested in exploring
+                    <span class="highlight">Data Science</span>.
+                </p>
+                <div class="project-link">
+                    <a href="{{ url_for('portfolio') }}" class="portfolio-link">
+                        🔍 Check out my Python projects →
+                    </a>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="card-icon">🐍</div>
+                <h3>Tech Stack</h3>
+                <div class="tech-tags">
+                    <span class="tech-tag">Flask</span>
+                    <span class="tech-tag">Jinja</span>
+                    <span class="tech-tag">WTForms</span>
+                    <span class="tech-tag">REST APIs</span>
+                    <span class="tech-tag">BeautifulSoup</span>
+                    <span class="tech-tag">Selenium</span>
+                    <span class="tech-tag">Turtle</span>
+                    <span class="tech-tag">Tkinter</span>
+                </div>
+                <div class="learning-section">
+                    <span class="learning-badge">📚 Currently learning: Data Science</span>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="card-icon">💬</div>
+                <h3>Languages</h3>
+                <ul class="language-list">
+                    <li>
+                        <img src="{{ url_for('static', filename='img/by.png') }}" alt="Belarusian flag"
+                             class="lang-flag">
+                        Belarusian <span class="lang-level">Native</span>
+                    </li>
+                    <li>
+                        <img src="{{ url_for('static', filename='img/uk.png') }}" alt="English flag" class="lang-flag">
+                        English <span class="lang-level">B1-B2</span>
+                    </li>
+                    <li>
+                        <img src="{{ url_for('static', filename='img/pl.png') }}" alt="Polish flag" class="lang-flag">
+                        Polish <span class="lang-level">Learning</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <div class="card-icon">🎓</div>
+                <h3>Education</h3>
+                <p><strong>BSUIR</strong> (2025)</p>
+                <p>Bachelor's in Software Engineering</p>
+                <p class="small-note">➕ Additional courses at IT-Academy and Udemy</p>
+            </div>
+
+            <div class="info-card">
+                <div class="card-icon">🔧</div>
+                <h3>Previous Experience</h3>
+                <p><strong>2 years</strong> as C# Developer</p>
+                <p>Now transitioning to Python development</p>
+            </div>
+
+            <div class="info-card">
+                <div class="card-icon">🌍</div>
+                <h3>Location & Goals</h3>
+                <p>📍 Currently in Belarus <img src="{{ url_for('static', filename='img/by.png') }}" alt="Belarus flag"
+                                               class="inline-flag"></p>
+                <p>🎯 Target: <strong>Poland</strong> <img src="{{ url_for('static', filename='img/pl.png') }}"
+                                                          alt="Poland flag" class="inline-flag"></p>
+                <p class="small-note">Ready for relocation</p>
+            </div>
+        </div>
+
+        <div class="goal-section">
+            <div class="goal-icon">🎯</div>
+            <div class="goal-content">
+                <h3>My Goal</h3>
+                <p class="goal-text">
+                    To join a development team in Poland as a <span class="highlight">motivated, responsible, and hardworking</span>
+                    Junior Python Developer.
+                </p>
+                <a href="{{ url_for('contact') }}">
+                    <div class="poland-highlight">
+                        <img src="{{ url_for('static', filename='img/pl.png') }}" alt="Poland flag"
+                             class="highlight-flag">
+                        Ready to relocate and start immediately!
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
