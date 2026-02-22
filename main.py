@@ -1,8 +1,9 @@
 import os
 from dotenv import load_dotenv
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, request
 from forms import ContactForm
 from notify import Notify
+from modules.morse import MorseConverter
 
 projects = [
 
@@ -11,7 +12,7 @@ projects = [
         "description": "Flask weather application",
         "image": "project1.png",
         "github": "https://github.com/prxfsk17",
-        "slug": "weather-app"
+        "slug": "weather"
     },
 
     {
@@ -19,12 +20,29 @@ projects = [
         "description": "Telegram bot",
         "image": "project2.png",
         "github": "https://github.com/prxfsk17",
-        "slug": "telegram-bot"
-    }
+        "slug": "telegram"
+    },
 
+    {
+        "title": "Morse-code cipher",
+        "description": "Ciphering and deciphering text",
+        "image": "morse.png",
+        "github": "https://github.com/prxfsk17/100DaysOfPython/tree/master/Day%2082",
+        "slug": "morse"
+    },
+
+    {
+        "title": "Morse-code cipher",
+        "description": "Ciphering and deciphering text",
+        "image": "morse.png",
+        "github": "https://github.com/prxfsk17/100DaysOfPython/tree/master/Day%2082",
+        "slug": "morse"
+    },
 ]
 
 notifier = Notify()
+cipher = MorseConverter("cipher")
+decipher = MorseConverter("decipher")
 
 load_dotenv()
 app = Flask(__name__)
@@ -40,7 +58,6 @@ def portfolio():
 
 @app.route("/project/<slug>")
 def project_page(slug):
-
     project = None
     for p in projects:
         if p["slug"] == slug:
@@ -48,13 +65,31 @@ def project_page(slug):
             break
     return render_template("project.html", project=project)
 
-@app.route("/demo/weather-app")
-def weather_demo():
-    return render_template("demo/weather.html")
+@app.route("/demo/<name>")
+def demo(name):
+    if name == "morse":
+        return redirect(url_for("morse"))
+    else:
+        return render_template(f"demo/{name}.html")
 
-@app.route("/demo/telegram-bot")
-def telegram_demo():
-    return render_template("demo/telegram.html")
+@app.route("/demo/morse", methods=["POST", "GET"])
+def morse():
+    result = None
+    error = None
+
+    if request.method == 'POST':
+        text = request.form.get('text', '')
+        action = request.form.get('action', 'encrypt')
+
+        try:
+            if action == 'encrypt':
+                result = cipher.operate(text)
+            else:
+                result = decipher.operate(text)
+        except Exception as e:
+            error=e
+
+    return render_template('demo/morse.html', result=result, error=error)
 
 @app.route("/contact", methods=["POST", "GET"])
 def contact():

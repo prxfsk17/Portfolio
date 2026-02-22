@@ -13,4 +13,5 @@
 
 <h3>Live Demo:</h3>
 <a href="/demo/{{ project.slug }}" class="btn btn-primary">Open Demo</a>
+<a href="{{ url_for('demo', name=project.slug) }}" class="btn btn-primary">Open Demo</a>
 {% endblock %}

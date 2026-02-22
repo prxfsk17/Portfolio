@@ -4,11 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="88c956c6-cc9f-4d27-88b7-921ea01ace7e" name="Changes" comment="Contact page, sending messages to dev via smtp">
+    <list default="true" id="88c956c6-cc9f-4d27-88b7-921ea01ace7e" name="Changes" comment="About page">
+      <change afterPath="$PROJECT_DIR$/modules/morse.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/demo/morse.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/img/favicon.ico" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/about.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/portfolio.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/portfolio.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/project.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/project.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,8 +20,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -136,13 +138,22 @@
       <option name="project" value="LOCAL" />
       <updated>1771443799177</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="About page">
+      <option name="closed" value="true" />
+      <created>1771765768377</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1771765768377</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit: switch between 2 pages with header and footer" />
     <MESSAGE value="Refactor: portfolio template" />
     <MESSAGE value="Contact page, sending messages to dev via smtp" />
-    <option name="LAST_COMMIT_MESSAGE" value="Contact page, sending messages to dev via smtp" />
+    <MESSAGE value="About page" />
+    <option name="LAST_COMMIT_MESSAGE" value="About page" />
   </component>
 </project>

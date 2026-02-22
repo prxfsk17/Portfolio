@@ -1,0 +1,359 @@
+{% extends "base.html" %}
+
+{% block title %}
+Morse Code Translator
+{% endblock %}
+
+{% block content %}
+<h1>Morse-code</h1>
+<div class="morse-container">
+    <div class="morse-header">
+        <h1 class="morse-title">📡 Morse Code Translator</h1>
+        <p class="morse-subtitle">Convert text to Morse code or decode Morse code to text</p>
+    </div>
+
+    <div class="morse-card">
+        <form action="{{ url_for('morse') }}" method="POST" class="morse-form">
+            <div class="input-section">
+                <label for="text" class="input-label">Enter your text:</label>
+                <textarea
+                    name="text"
+                    id="text"
+                    class="morse-input"
+                    rows="4"
+                    placeholder="Type your message here... (e.g., HELLO or .... . .-.. .-.. ---)"
+                    required
+                >{{ request.form.get('text', '') }}</textarea>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" name="action" value="encrypt" class="morse-btn encrypt-btn {% if request.form.get('action') == 'encrypt' or not request.form.get('action') %}active{% endif %}">
+                    <span class="btn-icon">🔒</span>
+                    Encrypt to Morse
+                </button>
+                <button type="submit" name="action" value="decrypt" class="morse-btn decrypt-btn {% if request.form.get('action') == 'decrypt' %}active{% endif %}">
+                    <span class="btn-icon">🔓</span>
+                    Decrypt to Text
+                </button>
+            </div>
+        </form>
+
+        <div class="output-section">
+            <label for="result" class="output-label">Result:</label>
+            <div class="output-wrapper">
+                <textarea
+                    id="result"
+                    class="morse-output"
+                    rows="4"
+                    placeholder="Your result will appear here..."
+                    readonly
+                >{{ result if result else '' }}</textarea>
+            </div>
+        </div>
+
+        {% if error %}
+        <div class="error-message">
+            ⚠️ {{ error }}
+        </div>
+        {% endif %}
+
+        <div class="info-section">
+            <div class="info-box">
+                <h3>📖 Morse Code Guide</h3>
+                <div class="morse-table">
+                    <div class="morse-row">
+                        <span class="char">A</span>
+                        <span class="code">.-</span>
+                        <span class="char">B</span>
+                        <span class="code">-...</span>
+                        <span class="char">C</span>
+                        <span class="code">-.-.</span>
+                    </div>
+                    <div class="morse-row">
+                        <span class="char">D</span>
+                        <span class="code">-..</span>
+                        <span class="char">E</span>
+                        <span class="code">.</span>
+                        <span class="char">F</span>
+                        <span class="code">..-.</span>
+                    </div>
+                    <div class="morse-row">
+                        <span class="char">G</span>
+                        <span class="code">--.</span>
+                        <span class="char">H</span>
+                        <span class="code">....</span>
+                        <span class="char">I</span>
+                        <span class="code">..</span>
+                    </div>
+                    <div class="morse-row">
+                        <span class="char">J</span>
+                        <span class="code">.---</span>
+                        <span class="char">K</span>
+                        <span class="code">-.-</span>
+                        <span class="char">L</span>
+                        <span class="code">.-..</span>
+                    </div>
+                    <div class="morse-row">
+                        <span class="char">M</span>
+                        <span class="code">--</span>
+                        <span class="char">N</span>
+                        <span class="code">-.</span>
+                        <span class="char">O</span>
+                        <span class="code">---</span>
+                    </div>
+                    <div class="morse-row">
+                        <span class="char">P</span>
+                        <span class="code">.--.</span>
+                        <span class="char">Q</span>
+                        <span class="code">--.-</span>
+                        <span class="char">R</span>
+                        <span class="code">.-.</span>
+                    </div>
+                    <div class="morse-row">
+                        <span class="char">S</span>
+                        <span class="code">...</span>
+                        <span class="char">T</span>
+                        <span class="code">-</span>
+                        <span class="char">U</span>
+                        <span class="code">..-</span>
+                    </div>
+                    <div class="morse-row">
+                        <span class="char">V</span>
+                        <span class="code">...-</span>
+                        <span class="char">W</span>
+                        <span class="code">.--</span>
+                        <span class="char">X</span>
+                        <span class="code">-..-</span>
+                    </div>
+                    <div class="morse-row">
+                        <span class="char">Y</span>
+                        <span class="code">-.--</span>
+                        <span class="char">Z</span>
+                        <span class="code">--..</span>
+                        <span class="char">0</span>
+                        <span class="code">-----</span>
+                    </div>
+                    <div class="morse-row">
+                        <span class="char">1</span>
+                        <span class="code">.----</span>
+                        <span class="char">2</span>
+                        <span class="code">..---</span>
+                        <span class="char">3</span>
+                        <span class="code">...--</span>
+                    </div>
+                    <div class="morse-row">
+                        <span class="char">4</span>
+                        <span class="code">....-</span>
+                        <span class="char">5</span>
+                        <span class="code">.....</span>
+                        <span class="char">6</span>
+                        <span class="code">-....</span>
+                    </div>
+                    <div class="morse-row">
+                        <span class="char">7</span>
+                        <span class="code">--...</span>
+                        <span class="char">8</span>
+                        <span class="code">---..</span>
+                         <span class="char">9</span>
+                        <span class="code">----.</span>
+                    </div>
+                </div>
+                <p class="info-note">⚠️ Symbols have to be separated <strong>by spaces</strong></p>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.morse-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+.morse-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.morse-title {
+    font-size: 2.5em;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.morse-subtitle {
+    color: #6c757d;
+    font-size: 1.1em;
+}
+
+.morse-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.morse-form {
+    margin-bottom: 25px;
+}
+
+.input-section, .output-section {
+    margin-bottom: 20px;
+}
+
+.input-label, .output-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 1.1em;
+}
+
+.morse-input, .morse-output {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 1.1em;
+    font-family: 'Courier New', monospace;
+    transition: all 0.3s ease;
+    resize: vertical;
+}
+
+.morse-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.morse-output {
+    background-color: #f8f9fa;
+    cursor: default;
+}
+
+.output-wrapper {
+    position: relative;
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.morse-btn {
+    flex: 1;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.encrypt-btn {
+    background: #e8f4fd;
+    color: #0366d6;
+    border: 2px solid transparent;
+}
+
+.encrypt-btn.active, .encrypt-btn:hover {
+    background: #0366d6;
+    color: white;
+}
+
+.decrypt-btn {
+    background: #f0e7fe;
+    color: #6f42c1;
+    border: 2px solid transparent;
+}
+
+.decrypt-btn.active, .decrypt-btn:hover {
+    background: #6f42c1;
+    color: white;
+}
+
+.btn-icon {
+    font-size: 1.2em;
+}
+
+.error-message {
+    background: #fff5f5;
+    color: #dc3545;
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border-left: 4px solid #dc3545;
+}
+
+.info-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #e9ecef;
+}
+
+.info-box h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+.morse-table {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 15px;
+}
+
+.morse-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.morse-row:last-child {
+    border-bottom: none;
+}
+
+.char {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.code {
+    font-family: 'Courier New', monospace;
+    color: #667eea;
+    font-weight: 500;
+}
+
+.info-note {
+    margin-top: 15px;
+    color: #6c757d;
+    font-size: 0.95em;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .morse-title {
+        font-size: 2em;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .morse-row {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+    }
+}
+</style>
+
+{% endblock %}
