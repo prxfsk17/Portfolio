@@ -25,17 +25,12 @@ projects = [
 
     {
         "title": "Morse-code cipher",
-        "description": "Ciphering and deciphering text",
+        "description": "Convert text to Morse code and vice versa",
         "image": "morse.png",
-        "github": "https://github.com/prxfsk17/100DaysOfPython/tree/master/Day%2082",
-        "slug": "morse"
-    },
-
-    {
-        "title": "Morse-code cipher",
-        "description": "Ciphering and deciphering text",
-        "image": "morse.png",
-        "github": "https://github.com/prxfsk17/100DaysOfPython/tree/master/Day%2082",
+        "technologies": "Python, OOP",
+        'details': 'Represents a python class. Objects of this class can be Morse code encoders or decoders',
+        'features': ['Text to Morse conversion', 'Morse to text conversion'],
+        "github": "https://github.com/prxfsk17/Portfolio/blob/master/modules/morse.py",
         "slug": "morse"
     },
 ]
@@ -64,13 +59,6 @@ def project_page(slug):
             project = p
             break
     return render_template("project.html", project=project)
-
-@app.route("/demo/<name>")
-def demo(name):
-    if name == "morse":
-        return redirect(url_for("morse"))
-    else:
-        return render_template(f"demo/{name}.html")
 
 @app.route("/demo/morse", methods=["POST", "GET"])
 def morse():

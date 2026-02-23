@@ -7,7 +7,7 @@ morse_codes = {
     'Z': '--..',
     '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-',
     '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.',
-    " ": " "
+    " ": "/"
 }
 reversed_morse_codes = {value: key for key, value in morse_codes.items()}
 
@@ -27,22 +27,26 @@ class MorseConverter:
         return self.data_outcome
 
     def cipher(self):
-        output=""
-        for c in self.data_income:
-            output += morse_codes[c.title()]
-        return output
+        try:
+            output=""
+            for c in self.data_income:
+                output += morse_codes[c.title()]
+                output += " "
+            return output
+        except:
+            return None
 
 
     def decipher(self):
-        output = ""
-        data = ""
-        for c in self.data_income:
-            if not c.isspace():
-                data += c
-            else:
-                print(data)
-                output += reversed_morse_codes[data]
+        try:
+            output = ""
+            words = self.data_income.split("/")
+            for word in words:
+                letters = word.split()
+                for letter in letters:
+                    deciphered = reversed_morse_codes[letter]
+                    output += deciphered
                 output += " "
-                data = ""
-        output += reversed_morse_codes[data]
-        return output
+            return output
+        except:
+            return None
