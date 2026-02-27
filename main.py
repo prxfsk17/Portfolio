@@ -4,15 +4,24 @@ from flask import Flask, render_template, redirect, url_for, flash, request
 from forms import ContactForm
 from notify import Notify
 from modules.morse import MorseConverter
+from modules.webscraping import Currencies
 
 projects = [
 
     {
-        "title": "Weather App",
-        "description": "Flask weather application",
-        "image": "project1.png",
-        "github": "https://github.com/prxfsk17",
-        "slug": "weather"
+        "title": "Top Currencies in Minsk",
+        "description": "Find best USD and EUR exchange rates in Minsk banks.",
+        "image": "currencies.png",
+        "technologies": "BeautifulSoup, Requests, smtplib, OOP",
+        "details": "Python class that scrapes top 1-5 currency exchange rates in Minsk and can send results via email using SMTP",
+        "features": [
+            "USD and EUR rate scraping",
+            "Top 1-5 best rates selection",
+            "Bank names and currencies",
+            "Email reports via SMTP"
+        ],
+        "github": "https://github.com/prxfsk17/Portfolio/blob/master/modules/webscraping.py",
+        "slug": "currencies"
     },
 
     {
@@ -35,11 +44,13 @@ projects = [
     },
 ]
 
+load_dotenv()
+
 notifier = Notify()
 cipher = MorseConverter("cipher")
 decipher = MorseConverter("decipher")
+currency_manager = Currencies()
 
-load_dotenv()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRET", "devkey")
 
@@ -78,6 +89,23 @@ def morse():
             error=e
 
     return render_template('demo/morse.html', result=result, error=error)
+
+@app.route("/demo/currencies", methods=["POST", "GET"])
+def currencies():
+    result = None
+    error = None
+    top_selected = 5
+    print(132)
+    if request.method == "POST":
+        try:
+            top_selected = request.form.get('top', type=int, default=5)
+            result = currency_manager.get_results(top_selected)
+        except Exception as e:
+            error = str(e)
+    return render_template("demo/currencies.html",
+                         result=result,
+                         error=error,
+                         top_selected=top_selected)
 
 @app.route("/contact", methods=["POST", "GET"])
 def contact():

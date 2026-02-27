@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}
+Top Currencies
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-gradient-primary text-white py-3">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-currency-exchange fs-1 me-3"></i>
+                    <div>
+                        <h4 class="mb-0 fw-bold">Top Currencies in Minsk</h4>
+                        <p class="mb-0 small opacity-75">Find the best USD and EUR exchange rates</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('currencies') }}" id="currency-form">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-8">
+                            <label for="top-select" class="form-label fw-semibold">
+                                <i class="bi bi-filter-circle me-1"></i>Number of top rates:
+                            </label>
+                            <select name="top" id="top-select" class="form-select form-select-lg" required>
+                                {% for i in range(1, 6) %}
+                                <option value="{{ i }}" {% if top_selected == i %}selected{% endif %}>
+                                    Top {{ i }} {{ 'rate' if i == 1 else 'rates' }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary btn-lg w-100" id="submitBtn">
+                                <i class="bi bi-search me-2"></i>Get Rates
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                {% if error %}
+                <div class="alert alert-danger alert-dismissible fade show mt-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    {{ error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endif %}
+
+                {% if result %}
+                <hr class="my-4">
+
+                <div class="results-section">
+                    <h5 class="mb-3">
+                        <i class="bi bi-trophy-fill text-warning me-2"></i>
+                        Top {{ top_selected }} Exchange Rates in Minsk
+                    </h5>
+
+                    <div class="row g-4">
+                        <!-- USD Card -->
+                        <div class="col-md-6">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0 fw-bold">
+                                        <i class="bi bi-currency-dollar text-success me-2"></i>
+                                        USD to BYN
+                                    </h6>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="list-group list-group-flush">
+                                        {% for bank, rate in result.usd.items() %}
+                                        <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                            <div>
+                                                <span class="fw-semibold">{{ loop.index }}.</span>
+                                                {{ bank }}
+                                            </div>
+                                            <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">
+                                                {{ rate }}
+                                            </span>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- EUR Card -->
+                        <div class="col-md-6">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0 fw-bold">
+                                        <i class="bi bi-currency-euro text-primary me-2"></i>
+                                        EUR to BYN
+                                    </h6>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="list-group list-group-flush">
+                                        {% for bank, rate in result.eur.items() %}
+                                        <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                            <div>
+                                                <span class="fw-semibold">{{ loop.index }}.</span>
+                                                {{ bank }}
+                                            </div>
+                                            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                                                {{ rate }}
+                                            </span>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById("currency-form").addEventListener("submit", function() {
+    const btn = document.getElementById("submitBtn");
+
+    btn.innerHTML = `
+        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+        Loading rates...
+    `;
+    btn.disabled = true;
+});
+</script>
+{% endblock %}
