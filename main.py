@@ -25,11 +25,21 @@ projects = [
     },
 
     {
-        "title": "Telegram Bot",
-        "description": "Telegram bot",
-        "image": "project2.png",
-        "github": "https://github.com/prxfsk17",
-        "slug": "telegram"
+        "title": "Cafe and Wifi API",
+        "description": "A RESTful API to manage and discover cafes with amenities like WiFi, power sockets, and coffee prices.",
+        "image": "postman.png",
+        "technologies": "Flask, REST, CRUD, SQLAlchemy, Postman",
+        "details": "This project is a fully functional REST API that allows users to perform CRUD operations on a database of cafes. Users can get a list of all cafes, search by location, get a random cafe, add new cafes, update coffee prices, and delete cafes. The API returns clean JSON responses, making it easy to integrate into front-end applications.",
+        "features": [
+            "GET /all - Retrieve all cafes",
+            "GET /search?loc= - Search cafes by location",
+            "GET /random - Get a random cafe suggestion",
+            "POST /add - Add a new cafe to the database",
+            "PATCH /update-price/ - Update coffee price",
+            "DELETE /report-closed/ - Delete a cafe (API key required)"
+        ],
+        "github": "https://github.com/prxfsk17/100DaysOfPython/tree/master/Day%2066",
+        "slug": "cafe-api"
     },
 
     {
@@ -90,12 +100,11 @@ def morse():
 
     return render_template('demo/morse.html', result=result, error=error)
 
-@app.route("/demo/currencies", methods=["POST", "GET"])
+@app.route("/demo/currencies", methods=["POST", "GET"], strict_slashes=False)
 def currencies():
     result = None
     error = None
     top_selected = 5
-    print(132)
     if request.method == "POST":
         try:
             top_selected = request.form.get('top', type=int, default=5)
@@ -120,6 +129,10 @@ def contact():
         flash(result)
         return redirect(url_for("contact"))
     return render_template("contact.html", form=form)
+
+@app.route("/demo/cafe-api", methods=["POST", "GET"])
+def postman():
+    return redirect("https://documenter.getpostman.com/view/50726073/2sB3dSP8Yv")
 
 if __name__ == "__main__":
     app.run(debug=True)

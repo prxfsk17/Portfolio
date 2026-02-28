@@ -19,7 +19,8 @@ class Currencies:
         self.get_currencies()
         result = {
             "usd": dict(list(self.usd_sorted.items())[:top_n]),
-            "eur": dict(list(self.eur_sorted.items())[:top_n])
+            "eur": dict(list(self.eur_sorted.items())[:top_n]),
+            "time": datetime.now().strftime('%d.%m.%Y')
         }
         return result
 

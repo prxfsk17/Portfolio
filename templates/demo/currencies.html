@@ -5,7 +5,7 @@ Top Currencies
 {% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center pb-2">
     <div class="col-md-8">
         <div class="card shadow-lg border-0">
             <div class="card-header bg-gradient-primary text-white py-3">
@@ -116,14 +116,26 @@ Top Currencies
                 </div>
                 {% endif %}
             </div>
+            {% if result.time %}
+            <div class="card-footer bg-light">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-info-circle-fill text-info me-2"></i>
+                    <small class="text-muted">
+                        Last update: {{result.time}}
+                    </small>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
+{% endblock %}
 
+
+{% block scripts %}
 <script>
 document.getElementById("currency-form").addEventListener("submit", function() {
     const btn = document.getElementById("submitBtn");
-
     btn.innerHTML = `
         <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
         Loading rates...
