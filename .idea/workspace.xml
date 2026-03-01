@@ -4,13 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="88c956c6-cc9f-4d27-88b7-921ea01ace7e" name="Changes" comment="preview for webscraping">
+    <list default="true" id="88c956c6-cc9f-4d27-88b7-921ea01ace7e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/modules/game/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules/game/webgame.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/demo/space_invaders.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/webscraping.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/webscraping.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/img/currencies.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/img/currencies.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/demo/currencies.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/demo/currencies.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,8 +20,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -48,24 +48,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/PyCharm/Projects/Portfolio&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.main.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "D:/PyCharm/Projects/Portfolio/static/game"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\PyCharm\Projects\Portfolio\static\game" />
       <recent name="D:\PyCharm\Projects\Portfolio" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\PyCharm\Projects\Portfolio\modules\game" />
       <recent name="D:\PyCharm\Projects\Portfolio\static" />
       <recent name="D:\PyCharm\Projects\Portfolio\templates" />
     </key>
@@ -178,7 +180,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772215893181</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="fix currencies and create Cafe and Wifi API">
+      <option name="closed" value="true" />
+      <created>1772295346927</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1772295346927</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -190,6 +200,7 @@
     <MESSAGE value="Refactor" />
     <MESSAGE value="webscraping" />
     <MESSAGE value="preview for webscraping" />
-    <option name="LAST_COMMIT_MESSAGE" value="preview for webscraping" />
+    <MESSAGE value="fix currencies and create Cafe and Wifi API" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix currencies and create Cafe and Wifi API" />
   </component>
 </project>

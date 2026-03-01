@@ -52,6 +52,25 @@ projects = [
         "github": "https://github.com/prxfsk17/Portfolio/blob/master/modules/morse.py",
         "slug": "morse"
     },
+
+    {
+        "title": "Space Invaders",
+        "description": "Classic arcade space shooter with multiple enemy types and progressive difficulty",
+        "image": "game.png",
+        "technologies": "Python, pygame (pygame-ce), OOP, pygbag",
+        "details": "A fully-featured Space Invaders clone with smooth controls, enemy animations, particle effects, and increasing difficulty. Features multiple enemy colors with different point values, shooting enemies, and a starfield background.",
+        "features": [
+            "Player ship with smooth A/D controls",
+            "3 enemy types with unique animations",
+            "Enemies shoot back at player",
+            "Progressive difficulty (5+ levels)",
+            "Score and lives system",
+            "Particle starfield background",
+            "Game over and restart functionality"
+        ],
+        "github": "https://github.com/prxfsk17/100DaysOfPython/tree/master/Day%2095",
+        "slug": "space-invaders"
+    }
 ]
 
 load_dotenv()
@@ -115,6 +134,10 @@ def currencies():
                          result=result,
                          error=error,
                          top_selected=top_selected)
+
+@app.route("/demo/space-invaders", methods=["GET"])
+def space_invaders():
+    return render_template("demo/space_invaders.html")
 
 @app.route("/contact", methods=["POST", "GET"])
 def contact():
