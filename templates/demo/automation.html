@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% block title %}
+Onliner Parser Demo
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-gradient-primary text-white py-3">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-robot fs-1 me-3"></i>
+                    <div>
+                        <h4 class="mb-0 fw-bold">Onliner Catalog Parser</h4>
+                        <p class="mb-0 small opacity-75">Search any product and get price statistics</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('automation') }}" id="search-form">
+                    <div class="row g-3">
+                        <div class="col-md-9">
+                            <div class="form-floating">
+                                <input type="text"
+                                       class="form-control form-control-lg"
+                                       id="product"
+                                       name="product"
+                                       placeholder="Enter product name"
+                                       value="{{ query if query else '' }}"
+                                       required>
+                                <label for="product">
+                                    <i class="bi bi-search me-2"></i>What product are you looking for?
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary btn-lg w-100 h-100" id="submitBtn">
+                                <i class="bi bi-search me-2"></i>Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <div id="loading" class="text-center my-4" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Parsing product information... This may take a few seconds</p>
+                </div>
+
+                {% if error %}
+                <div class="alert alert-danger alert-dismissible fade show mt-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    {{ error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endif %}
+
+                {% if result %}
+                <hr class="my-4">
+
+                <div class="results-section">
+                    <div class="d-flex align-items-center mb-4">
+                        <i class="bi bi-box-seam fs-1 text-primary me-3"></i>
+                        <div>
+                            <h3 class="mb-1">{{ result.name }}</h3>
+                            <small class="text-muted">
+                                <i class="bi bi-link me-1"></i>
+                                <a href="{{ result.url }}" target="_blank">View on Onliner.by</a>
+                            </small>
+                        </div>
+                    </div>
+
+                    {% if result.ai_description %}
+                    <div class="card bg-light border-0 mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="bi bi-cpu text-danger me-2"></i>
+                                AI Description
+                            </h5>
+                            <p class="card-text">{{ result.ai_description }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if result.price_stats %}
+                    <div class="row g-4">
+                        <div class="col-md-3 col-6">
+                            <div class="card bg-success bg-opacity-10 border-0">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-arrow-down-circle fs-2 text-success"></i>
+                                    <h6 class="mt-2">Min Price</h6>
+                                    <h4 class="text-success">{{ "%.2f"|format(result.price_stats.min_price) }} BYN</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-6">
+                            <div class="card bg-primary bg-opacity-10 border-0">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-bar-chart fs-2 text-primary"></i>
+                                    <h6 class="mt-2">Mean Price</h6>
+                                    <h4 class="text-primary">{{ "%.2f"|format(result.price_stats.mean_price) }} BYN</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-6">
+                            <div class="card bg-warning bg-opacity-10 border-0">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-arrow-up-circle fs-2 text-warning"></i>
+                                    <h6 class="mt-2">Max Price</h6>
+                                    <h4 class="text-warning">{{ "%.2f"|format(result.price_stats.max_price) }} BYN</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-6">
+                            <div class="card bg-info bg-opacity-10 border-0">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-grid-3x3-gap-fill fs-2 text-info"></i>
+                                    <h6 class="mt-2">Offers</h6>
+                                    <h4 class="text-info">{{ result.price_stats.offers_count }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card bg-light border-0 mt-4">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="bi bi-bar-chart-steps me-2"></i>
+                                Detailed Statistics
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <td>Minimum:</td>
+                                            <td class="fw-bold">{{ "%.2f"|format(result.price_stats.min_price) }} BYN
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Maximum:</td>
+                                            <td class="fw-bold">{{ "%.2f"|format(result.price_stats.max_price) }} BYN
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Average:</td>
+                                            <td class="fw-bold">{{ "%.2f"|format(result.price_stats.mean_price) }} BYN
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <td>Median:</td>
+                                            <td class="fw-bold">{{ "%.2f"|format(result.price_stats.median_price) }}
+                                                BYN
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total offers:</td>
+                                            <td class="fw-bold">{{ result.price_stats.offers_count }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if result.price_stats.prices|length > 1 %}
+                    <div class="mt-4">
+                        <h6 class="mb-2">Price Distribution</h6>
+                        <div class="price-histogram"
+                             style="height: 100px; display: flex; align-items: flex-end; gap: 2px;">
+                            {% set prices = result.price_stats.prices %}
+                            {% set max_price = prices|max %}
+                            {% for price in prices %}
+                            {% set height = (price / max_price * 100)|int %}
+                            <div class="histogram-bar bg-primary"
+                                 style="height: {{ height }}px; width: 20px;"
+                                 title='{{ "%.2f"|format(price) }} BYN'>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="card-footer bg-light">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-info-circle-fill text-info me-2"></i>
+                    <small class="text-muted">
+                        Powered by Selenium WebDriver. Parsing takes 10-15 seconds.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("search-form").addEventListener("submit", function() {
+        const btn = document.getElementById("submitBtn");
+        const loading = document.getElementById("loading");
+
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Searching...';
+        btn.disabled = true;
+        loading.style.display = "block";
+    });
+</script>
+
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .histogram-bar {
+        flex: 1;
+        background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+        border-radius: 4px 4px 0 0;
+        transition: height 0.3s ease;
+        min-width: 15px;
+    }
+
+    .histogram-bar:hover {
+        opacity: 0.8;
+        transform: scaleY(1.05);
+    }
+
+    .card {
+        transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+</style>
+{% endblock %}

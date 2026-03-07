@@ -5,6 +5,7 @@ from forms import ContactForm
 from notify import Notify
 from modules.morse import MorseConverter
 from modules.webscraping import Currencies
+from modules.automation import OnlinerParser
 
 projects = [
 
@@ -70,7 +71,26 @@ projects = [
         ],
         "github": "https://github.com/prxfsk17/100DaysOfPython/tree/master/Day%2095",
         "slug": "space-invaders"
-    }
+    },
+    {
+        "title": "Onliner Catalog Parser",
+        "description": "Automated product search and price analysis on Onliner.by using Selenium",
+        "image": "automation.png",
+        "technologies": "Python, Selenium, BeautifulSoup, NumPy, OOP",
+        "details": "A powerful web automation tool that searches for products on Onliner.by, extracts AI descriptions, and provides comprehensive price statistics including min, max, mean, and median prices from all available offers.",
+        "features": [
+            "Automated product search by query",
+            "AI product description extraction",
+            "Comprehensive price statistics",
+            "Smart cookie handling",
+            "Retry mechanism for stable clicks",
+            "Price parsing from multiple offers",
+            "Headless mode support",
+            "Clean OOP architecture with dataclasses"
+        ],
+        "github": "https://github.com/prxfsk17/Portfolio/blob/master/modules/automation.py",
+        "slug": "automation"
+    },
 ]
 
 load_dotenv()
@@ -156,6 +176,43 @@ def contact():
 @app.route("/demo/cafe-api", methods=["POST", "GET"])
 def postman():
     return redirect("https://documenter.getpostman.com/view/50726073/2sB3dSP8Yv")
+
+@app.route("/demo/automation", methods=["GET", "POST"])
+def automation():
+    result = None
+    error = None
+    query = None
+
+    if request.method == "POST":
+        query = request.form.get("product", "").strip()
+
+        if not query:
+            error = "Please enter a product name"
+        else:
+            try:
+                parser = OnlinerParser(headless=True, detach=False)
+
+                try:
+                    product = parser.search_product(query)
+
+                    if product and product.price_stats:
+                        result = {
+                            "name": product.name,
+                            "url": product.url,
+                            "ai_description": product.ai_description,
+                            "price_stats": product.price_stats
+                        }
+                    else:
+                        error = "Could not find price information for this product"
+                finally:
+                    parser.close()
+
+            except Exception as e:
+                error = f"An error occurred: {str(e)}"
+    return render_template("demo/automation.html",
+                           result=result,
+                           error=error,
+                           query=query)
 
 if __name__ == "__main__":
     app.run(debug=True)
