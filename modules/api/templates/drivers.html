@@ -1,0 +1,368 @@
+{% extends "base_api.html" %}
+
+{% block title %}F1 Drivers - Formula 1 Pilots{% endblock %}
+
+{% block extra_css %}
+<style>
+    .drivers-header {
+        background: linear-gradient(135deg, #0a0a0f, #1a1a2e);
+        padding: 4rem 0;
+        border-bottom: 3px solid var(--bs-danger);
+        margin-top: -1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .drivers-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><circle cx="50" cy="50" r="40" fill="none" stroke="%23dc3545" stroke-width="2"/><circle cx="50" cy="50" r="20" fill="none" stroke="%23dc3545" stroke-width="2"/><line x1="10" y1="50" x2="90" y2="50" stroke="%23dc3545" stroke-width="2"/><line x1="50" y1="10" x2="50" y2="90" stroke="%23dc3545" stroke-width="2"/></svg>');
+        background-size: 100px 100px;
+        opacity: 0.1;
+    }
+    
+    .driver-card {
+        background: rgba(255,255,255,0.03);
+        border-radius: 20px;
+        padding: 2rem;
+        height: 100%;
+        border: 1px solid rgba(255,255,255,0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+    }
+    
+    .driver-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--bs-danger);
+        background: rgba(220, 53, 69, 0.1);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    
+    .driver-card:hover .driver-image {
+        transform: scale(1.05);
+    }
+    
+    .driver-number {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: rgba(220, 53, 69, 0.3);
+        font-family: 'Courier New', monospace;
+    }
+    
+    .driver-image {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid var(--bs-danger);
+        margin-bottom: 1.5rem;
+        transition: transform 0.3s ease;
+    }
+    
+    .driver-image-placeholder {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        border: 3px solid var(--bs-danger);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+    }
+    
+    .driver-name {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+        color: white;
+    }
+    
+    .driver-abbr {
+        font-size: 1.2rem;
+        color: var(--bs-danger);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        letter-spacing: 2px;
+    }
+    
+    .driver-nationality {
+        display: inline-block;
+        padding: 0.35rem 1rem;
+        border-radius: 50px;
+        background: rgba(255,255,255,0.1);
+        color: white;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .driver-stat {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .driver-stat:last-child {
+        border-bottom: none;
+    }
+    
+    .stat-label {
+        color: rgba(255,255,255,0.5);
+        font-size: 0.9rem;
+    }
+    
+    .stat-value {
+        font-weight: bold;
+        color: white;
+    }
+    
+    .stat-value.highlight {
+        color: var(--bs-danger);
+        font-size: 1.2rem;
+    }
+    
+    .championship-badge {
+        background: linear-gradient(135deg, #ffd700, #ffa500);
+        color: black;
+        padding: 0.25rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        display: inline-block;
+        margin-bottom: 1rem;
+    }
+    
+    .view-details-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 0.8rem;
+        margin-top: 1rem;
+        background: transparent;
+        border: 2px solid rgba(255,255,255,0.2);
+        border-radius: 10px;
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .view-details-btn:hover {
+        background: var(--bs-danger);
+        border-color: var(--bs-danger);
+        color: white;
+    }
+    
+    .filter-section {
+        background: rgba(255,255,255,0.02);
+        border-radius: 50px;
+        padding: 0.5rem;
+        display: inline-flex;
+        border: 1px solid rgba(255,255,255,0.1);
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .filter-btn {
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-btn:hover {
+        background: rgba(220, 53, 69, 0.1);
+        color: var(--bs-danger);
+    }
+    
+    .filter-btn.active {
+        background: var(--bs-danger);
+        color: white;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem;
+        background: rgba(255,255,255,0.02);
+        border-radius: 20px;
+        border: 2px dashed rgba(255,255,255,0.1);
+    }
+    
+    .current-team {
+        background: rgba(220, 53, 69, 0.1);
+        border-radius: 10px;
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    @media (max-width: 768px) {
+        .drivers-header {
+            padding: 3rem 0;
+        }
+        .driver-card {
+            padding: 1.5rem;
+        }
+        .driver-name {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<section class="drivers-header">
+    <div class="container text-center">
+        <h1 class="display-3 fw-bold mb-4">
+            F1 <span class="text-danger">Drivers</span>
+        </h1>
+        <p class="lead fs-4 mb-4 text-secondary-emphasis" style="max-width: 700px; margin: 0 auto;">
+            The heroes behind the wheel. World champions, race winners, and the fastest men on the planet.
+        </p>
+        
+        <!-- Quick Stats -->
+        <div class="d-flex justify-content-center gap-4 mt-4">
+            <div>
+                <span class="fs-2 fw-bold text-danger">{{ drivers|length }}</span>
+                <span class="text-secondary-emphasis d-block">Active Drivers</span>
+            </div>
+            <div>
+                {% set ns = namespace(champions=0) %}
+                {% for driver in drivers %}
+                    {% if driver.world_championships and driver.world_championships > 0 %}
+                        {% set ns.champions = ns.champions + 1 %}
+                    {% endif %}
+                {% endfor %}
+                <span class="fs-2 fw-bold text-danger">{{ ns.champions }}</span>
+                <span class="text-secondary-emphasis d-block">World Champions</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<main class="container py-5">
+    <!-- Filter Section -->
+    <div class="text-center mb-5">
+        <div class="filter-section">
+            <a href="{{ url_for('api_project.all_drivers') }}" class="filter-btn {% if not request.args.get('filter') %}active{% endif %}">All Drivers</a>
+            <a href="{{ url_for('api_project.all_drivers', filter='champions') }}" class="filter-btn {% if request.args.get('filter') == 'champions' %}active{% endif %}">World Champions</a>
+        </div>
+    </div>
+
+    {% if drivers %}
+    <!-- Drivers Grid -->
+    <div class="row g-4">
+        {% for driver in drivers %}
+        {% if not request.args.get('filter') == 'champions' or (driver.world_championships and driver.world_championships > 0) %}
+        <div class="col-xl-4 col-md-6">
+            <div class="driver-card">
+                <div class="driver-number">#{{ driver.number or '??' }}</div>
+                
+                <!-- Driver Image -->
+                <div class="text-center">
+                    {% if driver.image %}
+                    <img src="{{ driver.image }}" alt="{{ driver.name }}" class="driver-image" loading="lazy"
+                         onerror="this.onerror=null; this.src='https://via.placeholder.com/120?text=F1';">
+                    {% else %}
+                    <div class="driver-image-placeholder">
+                        <i class="bi bi-person-circle fs-1 text-danger"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Driver Info -->
+                <div class="text-center">
+                    <h2 class="driver-name">{{ driver.name }}</h2>
+                    <div class="driver-abbr">{{ driver.abbr }}</div>
+                    
+                    {% if driver.world_championships and driver.world_championships > 0 %}
+                    <div class="championship-badge">
+                        <i class="bi bi-trophy-fill me-1"></i>
+                        {{ driver.world_championships }}x World Champion
+                    </div>
+                    {% endif %}
+                    
+                    <div class="driver-nationality">
+                        <i class="bi bi-flag me-1"></i>
+                        {{ driver.nationality }}
+                    </div>
+                </div>
+                
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="driver-stat">
+                        <span class="stat-label"><i class="bi bi-calendar me-2"></i>Age</span>
+                        <span class="stat-value">
+                            {% if driver.birthdate %}
+                                {% set birth_year = driver.birthdate.split('-')[0]|int %}
+                                {{ now.year - birth_year }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="driver-stat">
+                        <span class="stat-label"><i class="bi bi-flag-checkered me-2"></i>Grands Prix</span>
+                        <span class="stat-value highlight">{{ driver.grands_prix_entered or '0' }}</span>
+                    </div>
+                    
+                    <div class="driver-stat">
+                        <span class="stat-label"><i class="bi bi-trophy me-2"></i>Podiums</span>
+                        <span class="stat-value highlight">{{ driver.podiums or '0' }}</span>
+                    </div>
+                    
+                    <div class="driver-stat">
+                        <span class="stat-label"><i class="bi bi-star me-2"></i>Points</span>
+                        <span class="stat-value">{{ driver.career_points or '0' }}</span>
+                    </div>
+                </div>
+                
+                <!-- Current Team -->
+                {% if driver.teams and driver.teams|length > 0 %}
+                <div class="current-team text-center">
+                    <small class="text-secondary-emphasis">Current Team</small>
+                    <div class="fw-bold text-danger">{{ driver.teams[0].team.name }}</div>
+                </div>
+                {% endif %}
+                
+                <!-- View Details Button -->
+                <a href="{{ url_for('api_project.driver_detail', driver_id=driver.id) }}" class="view-details-btn">
+                    <span>VIEW PROFILE</span>
+                    <i class="bi bi-arrow-right-short fs-5"></i>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    
+    {% else %}
+    <!-- Empty State -->
+    <div class="empty-state">
+        <i class="bi bi-person-badge display-1 text-danger mb-4"></i>
+        <h3 class="mb-3">No Drivers Found</h3>
+        <p class="text-secondary-emphasis">Unable to load drivers data. Please try again later.</p>
+        <a href="{{ url_for('api_project.force_refresh') }}" class="btn btn-danger mt-3 px-4 py-2">
+            <i class="bi bi-arrow-repeat me-2"></i>Refresh Data
+        </a>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

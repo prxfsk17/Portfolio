@@ -1,0 +1,390 @@
+{% extends "base_api.html" %}
+
+{% block title %}{{ driver.name }} - F1 Driver{% endblock %}
+
+{% block extra_css %}
+<style>
+    .driver-header {
+        background: linear-gradient(135deg, #0a0a0f, #1a1a2e);
+        padding: 3rem 0;
+        border-bottom: 3px solid var(--bs-danger);
+        margin-top: -1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .driver-header-content {
+        display: flex;
+        align-items: center;
+        gap: 3rem;
+        flex-wrap: wrap;
+    }
+    
+    .driver-image-large {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid var(--bs-danger);
+        box-shadow: 0 20px 40px rgba(220, 53, 69, 0.3);
+        transition: transform 0.3s ease;
+    }
+    
+    .driver-image-large:hover {
+        transform: scale(1.05);
+    }
+    
+    .driver-image-placeholder-large {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        border: 4px solid var(--bs-danger);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .driver-info-large {
+        flex: 1;
+    }
+    
+    .driver-name-large {
+        font-size: 4rem;
+        font-weight: 900;
+        margin-bottom: 0.5rem;
+        line-height: 1.2;
+    }
+    
+    .driver-abbr-large {
+        font-size: 2rem;
+        color: var(--bs-danger);
+        font-weight: 600;
+        margin-bottom: 1rem;
+        letter-spacing: 3px;
+    }
+    
+    .driver-number-large {
+        display: inline-block;
+        background: rgba(220, 53, 69, 0.2);
+        border: 2px solid var(--bs-danger);
+        padding: 0.5rem 2rem;
+        border-radius: 50px;
+        font-size: 2rem;
+        font-weight: 900;
+        color: white;
+        margin-top: 1rem;
+    }
+    
+    .back-btn {
+        margin-bottom: 1rem;
+    }
+    
+    .back-btn .btn {
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .info-card {
+        background: rgba(255,255,255,0.03);
+        border-radius: 20px;
+        padding: 2rem;
+        height: 100%;
+        border: 1px solid rgba(255,255,255,0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .info-card:hover {
+        border-color: var(--bs-danger);
+        background: rgba(220, 53, 69, 0.05);
+    }
+    
+    .info-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        color: white;
+        border-bottom: 2px solid var(--bs-danger);
+        padding-bottom: 0.5rem;
+        display: inline-block;
+    }
+    
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .info-row:last-child {
+        border-bottom: none;
+    }
+    
+    .info-label {
+        color: rgba(255,255,255,0.5);
+        font-size: 1rem;
+    }
+    
+    .info-value {
+        font-weight: bold;
+        color: white;
+        font-size: 1.1rem;
+    }
+    
+    .achievement-card {
+        background: linear-gradient(135deg, rgba(220,53,69,0.1), rgba(0,0,0,0.3));
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        border: 1px solid rgba(255,255,255,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .achievement-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--bs-danger);
+    }
+    
+    .achievement-number {
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--bs-danger);
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+    
+    .achievement-label {
+        color: rgba(255,255,255,0.7);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .team-history {
+        background: rgba(255,255,255,0.02);
+        border-radius: 15px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid rgba(255,255,255,0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .team-history:hover {
+        border-color: var(--bs-danger);
+        background: rgba(220, 53, 69, 0.05);
+    }
+    
+    .team-logo-small {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+        margin-right: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+        .driver-header-content {
+            flex-direction: column;
+            text-align: center;
+        }
+        .driver-name-large {
+            font-size: 2.5rem;
+        }
+        .driver-abbr-large {
+            font-size: 1.5rem;
+        }
+        .driver-image-large {
+            width: 150px;
+            height: 150px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Back Button -->
+    <div class="back-btn mt-4">
+        <a href="{{ url_for('api_project.drivers_search') }}" class="btn btn-outline-light bg-dark bg-opacity-50">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Drivers
+        </a>
+    </div>
+</div>
+
+<!-- Driver Header -->
+<section class="driver-header">
+    <div class="container">
+        <div class="driver-header-content">
+            <!-- Driver Image -->
+            {% if driver.image %}
+            <img src="{{ driver.image }}" alt="{{ driver.name }}" class="driver-image-large" loading="lazy"
+                 onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'driver-image-placeholder-large\'><i class=\'bi bi-person-circle fs-1 text-danger\'></i></div>';">
+            {% else %}
+            <div class="driver-image-placeholder-large">
+                <i class="bi bi-person-circle fs-1 text-danger"></i>
+            </div>
+            {% endif %}
+            
+            <!-- Driver Info -->
+            <div class="driver-info-large">
+                <h1 class="driver-name-large">{{ driver.name }}</h1>
+                <div class="driver-abbr-large">{{ driver.abbr }}</div>
+                
+                <div class="d-flex flex-wrap gap-3 align-items-center mt-3">
+                    <span class="driver-number-large">#{{ driver.number or '??' }}</span>
+                    
+                    <span class="badge bg-dark border border-light px-3 py-2 fs-6">
+                        <i class="bi bi-flag me-1"></i>
+                        {{ driver.nationality }}
+                    </span>
+                    
+                    {% if driver.world_championships and driver.world_championships > 0 %}
+                    <span class="badge bg-warning text-dark px-3 py-2 fs-6">
+                        <i class="bi bi-trophy-fill me-1"></i>
+                        {{ driver.world_championships }}x World Champion
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<main class="container py-5">
+    <!-- Key Achievements -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3 col-6">
+            <div class="achievement-card">
+                <div class="achievement-number">{{ driver.grands_prix_entered or '0' }}</div>
+                <div class="achievement-label">Grands Prix</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 col-6">
+            <div class="achievement-card">
+                <div class="achievement-number">{{ driver.podiums or '0' }}</div>
+                <div class="achievement-label">Podiums</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 col-6">
+            <div class="achievement-card">
+                <div class="achievement-number">{{ driver.highest_race_finish.number or '0' }}</div>
+                <div class="achievement-label">Race Wins</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 col-6">
+            <div class="achievement-card">
+                <div class="achievement-number">{{ driver.career_points or '0' }}</div>
+                <div class="achievement-label">Career Points</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <!-- Personal Information -->
+        <div class="col-lg-6">
+            <div class="info-card">
+                <h2 class="info-title">
+                    <i class="bi bi-person-fill text-danger me-2"></i>
+                    Personal Information
+                </h2>
+                
+                <div class="info-row">
+                    <span class="info-label">Full Name</span>
+                    <span class="info-value">{{ driver.name }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Nationality</span>
+                    <span class="info-value">{{ driver.nationality }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Birthdate</span>
+                    <span class="info-value">
+                        {% if driver.birthdate %}
+                            {{ driver.birthdate }} ({{ ((now - driver.birthdate|string|to_datetime).days / 365.25)|int }} years)
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Birthplace</span>
+                    <span class="info-value">{{ driver.birthplace or 'N/A' }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Career Statistics -->
+        <div class="col-lg-6">
+            <div class="info-card">
+                <h2 class="info-title">
+                    <i class="bi bi-graph-up-arrow text-danger me-2"></i>
+                    Career Statistics
+                </h2>
+                
+                <div class="info-row">
+                    <span class="info-label">World Championships</span>
+                    <span class="info-value highlight">{{ driver.world_championships or '0' }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Race Wins</span>
+                    <span class="info-value highlight">{{ driver.highest_race_finish.number or '0' }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Podiums</span>
+                    <span class="info-value highlight">{{ driver.podiums or '0' }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Pole Positions</span>
+                    <span class="info-value highlight">{{ driver.highest_grid_position or '0' }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Career Points</span>
+                    <span class="info-value">{{ driver.career_points or '0' }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Team History -->
+        <div class="col-12">
+            <div class="info-card">
+                <h2 class="info-title">
+                    <i class="bi bi-clock-history text-danger me-2"></i>
+                    Team History
+                </h2>
+                
+                {% if driver.teams and driver.teams|length > 0 %}
+                    {% for team_entry in driver.teams %}
+                    <div class="team-history d-flex align-items-center">
+                        {% if team_entry.team.logo %}
+                        <img src="{{ team_entry.team.logo }}" alt="{{ team_entry.team.name }}" class="team-logo-small">
+                        {% else %}
+                        <i class="bi bi-tools fs-3 text-danger me-3"></i>
+                        {% endif %}
+                        <div class="flex-grow-1">
+                            <div class="fw-bold">{{ team_entry.team.name }}</div>
+                            <small class="text-secondary-emphasis">Season {{ team_entry.season }}</small>
+                        </div>
+                        {% if loop.first %}
+                        <span class="badge bg-success">Current</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <p class="text-secondary-emphasis text-center py-4">No team history available</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

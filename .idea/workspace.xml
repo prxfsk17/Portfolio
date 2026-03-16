@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="88c956c6-cc9f-4d27-88b7-921ea01ace7e" name="Changes" comment="Space Invaders">
-      <change afterPath="$PROJECT_DIR$/modules/automation.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/demo/automation.html" afterDir="false" />
+    <list default="true" id="88c956c6-cc9f-4d27-88b7-921ea01ace7e" name="Changes" comment="Selenium automation">
+      <change afterPath="$PROJECT_DIR$/modules/api/static/css/styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/automation.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/img/automation.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/about.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -194,7 +195,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772355095180</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Selenium automation">
+      <option name="closed" value="true" />
+      <created>1772875396851</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1772875396851</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -208,6 +217,7 @@
     <MESSAGE value="preview for webscraping" />
     <MESSAGE value="fix currencies and create Cafe and Wifi API" />
     <MESSAGE value="Space Invaders" />
-    <option name="LAST_COMMIT_MESSAGE" value="Space Invaders" />
+    <MESSAGE value="Selenium automation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Selenium automation" />
   </component>
 </project>

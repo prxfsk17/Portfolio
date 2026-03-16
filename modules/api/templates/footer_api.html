@@ -1,0 +1,108 @@
+<footer class="bg-black text-light py-5 mt-5 border-top border-danger">
+    <div class="container">
+        <div class="row gy-5 justify-content-between">
+            <!-- About Section - слева -->
+            <div class="col-lg-5">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-danger bg-opacity-25 p-3 rounded-circle me-3">
+                        <i class="bi bi-speedometer2 text-danger fs-3"></i>
+                    </div>
+                    <div>
+                        <h4 class="mb-0 fw-bold">{{ app_name }}</h4>
+                    </div>
+                </div>
+                <p class="text-secondary-emphasis mb-4" style="max-width: 90%;">
+                    Your premier destination for Formula 1 circuit information.
+                    Real-time data, detailed specs, and historical records.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="https://github.com/prxfsk17/100DaysOfPython/tree/master/Day%2096" class="text-light fs-5 hover-danger" target="_blank">
+                        <i class="bi bi-github"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- System Info - справа -->
+            <div class="col-lg-4">
+                <h5 class="fw-bold mb-4 text-end">System Status</h5>
+                <div class="bg-dark bg-opacity-50 p-4 rounded-3 border border-secondary">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-secondary-emphasis">Cache:</span>
+                        {% if cache_status == 'fresh' %}
+                        <span class="text-success">
+                            <i class="bi bi-check-circle-fill me-1"></i>Fresh
+                        </span>
+                        {% elif cache_status == 'stale' %}
+                        <span class="text-warning">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>Stale
+                        </span>
+                        {% else %}
+                        <span class="text-danger">
+                            <i class="bi bi-x-circle-fill me-1"></i>No Data
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-secondary-emphasis">Last Update:</span>
+                        <span class="text-light">
+                            {% if last_update %}
+                                {% if last_update is string %}
+                                    {{ last_update.split('T')[1][:8] if 'T' in last_update else last_update }}
+                                {% else %}
+                                    {{ last_update.strftime('%H:%M:%S') }}
+                                {% endif %}
+                            {% else %}
+                                Never
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <span class="text-secondary-emphasis">API:</span>
+                        <span class="text-success">
+                            <i class="bi bi-check-circle-fill me-1"></i>Connected
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <hr class="border-secondary mt-5">
+        <div class="row align-items-center">
+            <div class="col text-center">
+                <p class="small text-secondary-emphasis mb-0">
+                    <i class="bi bi-c-circle me-1"></i>
+                    {{ current_year }} {{ app_name }}.
+                    <span class="mx-2">|</span>
+                    Powered by <a href="https://api-sports.io/documentation/formula-1/v1" class="text-danger text-decoration-none">API-Sports</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+    .hover-danger:hover {
+        color: var(--bs-danger) !important;
+        transition: color 0.3s ease;
+    }
+    .text-secondary-emphasis {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+    footer a {
+        transition: all 0.3s ease;
+    }
+    .bg-opacity-50 {
+        background-color: rgba(0, 0, 0, 0.5) !important;
+    }
+    @media (min-width: 992px) {
+        .col-lg-5:first-child {
+            padding-right: 3rem;
+        }
+        .col-lg-4:last-child {
+            padding-left: 2rem;
+        }
+    }
+</style>

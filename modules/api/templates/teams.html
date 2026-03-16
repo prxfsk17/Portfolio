@@ -1,0 +1,337 @@
+{% extends "base_api.html" %}
+
+{% block title %}F1 Teams - Formula 1 Constructors{% endblock %}
+
+{% block extra_css %}
+<style>
+    .teams-header {
+        background: linear-gradient(135deg, #0a0a0f, #1a1a2e);
+        padding: 4rem 0;
+        border-bottom: 3px solid var(--bs-danger);
+        margin-top: -1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .teams-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><rect x="20" y="20" width="60" height="60" fill="none" stroke="%23dc3545" stroke-width="2"/><circle cx="30" cy="30" r="5" fill="%23dc3545"/><circle cx="70" cy="30" r="5" fill="%23dc3545"/><circle cx="30" cy="70" r="5" fill="%23dc3545"/><circle cx="70" cy="70" r="5" fill="%23dc3545"/></svg>');
+        background-size: 100px 100px;
+        opacity: 0.1;
+    }
+    
+    .team-card {
+        background: rgba(255,255,255,0.03);
+        border-radius: 20px;
+        padding: 2rem;
+        height: 100%;
+        border: 1px solid rgba(255,255,255,0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+    }
+    
+    .team-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--bs-danger);
+        background: rgba(220, 53, 69, 0.1);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    
+    .team-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, transparent, var(--bs-danger), transparent);
+        transform: translateX(-100%);
+        transition: transform 0.5s ease;
+    }
+    
+    .team-card:hover::before {
+        transform: translateX(100%);
+    }
+    
+    .team-logo {
+        height: 100px;
+        width: 100px;
+        object-fit: contain;
+        margin-bottom: 1.5rem;
+        transition: transform 0.3s ease;
+    }
+    
+    .team-card:hover .team-logo {
+        transform: scale(1.1);
+    }
+    
+    .team-name {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: white;
+    }
+    
+    .team-badge {
+        display: inline-block;
+        padding: 0.35rem 1rem;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .badge-champions {
+        background: linear-gradient(135deg, #ffd700, #ffa500);
+        color: black;
+    }
+    
+    .badge-year {
+        background: rgba(255,255,255,0.1);
+        color: var(--bs-danger);
+        border: 1px solid var(--bs-danger);
+    }
+    
+    .team-stat {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .team-stat:last-child {
+        border-bottom: none;
+    }
+    
+    .stat-label {
+        color: rgba(255,255,255,0.5);
+        font-size: 0.9rem;
+    }
+    
+    .stat-value {
+        font-weight: bold;
+        color: white;
+    }
+    
+    .stat-value.highlight {
+        color: var(--bs-danger);
+        font-size: 1.2rem;
+    }
+    
+    .view-details-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 0.8rem;
+        margin-top: 1rem;
+        background: transparent;
+        border: 2px solid rgba(255,255,255,0.2);
+        border-radius: 10px;
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .view-details-btn:hover {
+        background: var(--bs-danger);
+        border-color: var(--bs-danger);
+        color: white;
+    }
+    
+    .stats-grid {
+        margin: 1rem 0;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem;
+        background: rgba(255,255,255,0.02);
+        border-radius: 20px;
+        border: 2px dashed rgba(255,255,255,0.1);
+    }
+    
+    .filter-section {
+        background: rgba(255,255,255,0.02);
+        border-radius: 50px;
+        padding: 0.5rem;
+        display: inline-flex;
+        border: 1px solid rgba(255,255,255,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .filter-btn {
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-btn:hover {
+        background: rgba(220, 53, 69, 0.1);
+        color: var(--bs-danger);
+    }
+    
+    .filter-btn.active {
+        background: var(--bs-danger);
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .teams-header {
+            padding: 3rem 0;
+        }
+        .team-card {
+            padding: 1.5rem;
+        }
+        .team-name {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<section class="teams-header">
+    <div class="container text-center">
+        <h1 class="display-3 fw-bold mb-4">
+            F1 <span class="text-danger">Teams</span>
+        </h1>
+        <p class="lead fs-4 mb-4 text-secondary-emphasis" style="max-width: 700px; margin: 0 auto;">
+            The constructors behind the machines. Engineering excellence, innovation, and the pursuit of speed.
+        </p>
+
+        <!-- Quick Stats -->
+        <!-- Quick Stats -->
+        <div class="d-flex justify-content-center gap-4 mt-4">
+            <div>
+                <span class="fs-2 fw-bold text-danger">{{ teams|length }}</span>
+                <span class="text-secondary-emphasis d-block">Teams</span>
+            </div>
+            <div>
+        <span class="fs-2 fw-bold text-danger">
+            {% set ns = namespace(champions=0) %}
+            {% for team in teams %}
+                {% if team.world_championships and team.world_championships > 0 %}
+                    {% set ns.champions = ns.champions + 1 %}
+                {% endif %}
+            {% endfor %}
+            {{ ns.champions }}
+        </span>
+                <span class="text-secondary-emphasis d-block">Champions</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<main class="container py-5">
+    <!-- Filter Section (by championships) -->
+    <div class="text-center mb-5">
+        <div class="filter-section">
+            <a href="{{ url_for('api_project.all_teams') }}" class="filter-btn {% if not request.args.get('filter') %}active{% endif %}">All Teams</a>
+            <a href="{{ url_for('api_project.all_teams', filter='champions') }}"
+               class="filter-btn {% if request.args.get('filter') == 'champions' %}active{% endif %}">World
+                Champions</a>
+        </div>
+    </div>
+
+    {% if teams %}
+    <!-- Teams Grid -->
+    <div class="row g-4">
+        {% for team in teams %}
+        {% if not request.args.get('filter') == 'champions' or team.world_championships|safe_int > 0 %}
+        <div class="col-xl-4 col-md-6">
+            <div class="team-card">
+                <!-- Logo -->
+                <div class="text-center">
+                    {% if team.logo %}
+                    <img src="{{ team.logo }}" alt="{{ team.name }} logo" class="team-logo" loading="lazy"
+                         onerror="this.onerror=null; this.src='https://via.placeholder.com/100?text=F1';">
+                    {% else %}
+                    <div class="team-logo d-flex align-items-center justify-content-center bg-dark rounded-circle mx-auto">
+                        <i class="bi bi-tools fs-1 text-danger"></i>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Team Name -->
+                <h2 class="team-name text-center">{{ team.name }}</h2>
+
+                <!-- Badges -->
+                <div class="text-center mb-3">
+                    {% if team.world_championships|safe_int > 0 %}
+                    <span class="team-badge badge-champions me-2">
+                        <i class="bi bi-trophy-fill me-1"></i>
+                        {{ team.world_championships }}x Champions
+                    </span>
+                    {% endif %}
+
+                    <span class="team-badge badge-year">
+                        <i class="bi bi-calendar-event me-1"></i>
+                        {% if team.first_team_entry %}
+                            Since {{ team.first_team_entry }}
+                        {% else %}
+                            No longer exists
+                        {% endif %}
+                    </span>
+                </div>
+
+                <!-- Key Stats -->
+                <div class="stats-grid">
+                    <div class="team-stat">
+                        <span class="stat-label"><i class="bi bi-geo-alt me-2"></i>Base</span>
+                        <span class="stat-value">{{ team.base or 'No longer exists' }}</span>
+                    </div>
+
+                    <div class="team-stat">
+                        <span class="stat-label"><i class="bi bi-flag me-2"></i>Pole Positions</span>
+                        <span class="stat-value highlight">{{ team.pole_positions or '0' }}</span>
+                    </div>
+
+                    <div class="team-stat">
+                        <span class="stat-label"><i class="bi bi-stopwatch me-2"></i>Fastest Laps</span>
+                        <span class="stat-value highlight">{{ team.fastest_laps or '0' }}</span>
+                    </div>
+
+                    <div class="team-stat">
+                        <span class="stat-label"><i class="bi bi-person me-2"></i>Director</span>
+                        <span class="stat-value">{{ team.director or 'N/A' }}</span>
+                    </div>
+                </div>
+
+                <!-- View Details Button -->
+                <a href="{{ url_for('api_project.team_detail', team_id=team.id) }}" class="view-details-btn">
+                    <span>VIEW DETAILS</span>
+                    <i class="bi bi-arrow-right-short fs-5"></i>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="empty-state">
+        <i class="bi bi-tools display-1 text-danger mb-4"></i>
+        <h3 class="mb-3">No Teams Found</h3>
+        <p class="text-secondary-emphasis">Unable to load teams data. Please try again later.</p>
+        <a href="{{ url_for('api_project.force_refresh') }}" class="btn btn-danger mt-3 px-4 py-2">
+            <i class="bi bi-arrow-repeat me-2"></i>Refresh Data
+        </a>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

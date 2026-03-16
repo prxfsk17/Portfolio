@@ -1,0 +1,132 @@
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-black border-bottom border-danger sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('api_project.home') }}">
+                <i class="bi bi-speedometer2 text-danger me-2 fs-1"></i>
+                <div>
+                    <span class="fw-bold fs-4">{{ app_name }}</span>
+                    <br>
+                    <small class="text-secondary-emphasis">Formula 1 Database</small>
+                </div>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <!-- Home -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'home' %}active text-danger{% endif %} fs-5"
+                           href="{{ url_for('api_project.home') }}">
+                            <i class="bi bi-house-door-fill me-1"></i>
+                            Home
+                        </a>
+                    </li>
+
+                    <!-- Circuits -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'all_circuits' %}active text-danger{% endif %} fs-5"
+                           href="{{ url_for('api_project.all_circuits') }}">
+                            <i class="bi bi-grid-3x3-gap-fill me-1"></i>
+                            Circuits
+                        </a>
+                    </li>
+
+                    <!-- Teams -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'teams' %}active text-danger{% endif %} fs-5"
+                           href="{{ url_for('api_project.all_teams',) }}">
+                            <i class="bi bi-tools me-1"></i>
+                            Teams
+                        </a>
+                    </li>
+
+                    <!-- Drivers -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'drivers_search' %}active text-danger{% endif %} fs-5"
+                           href="{{ url_for('api_project.drivers_search') }}">
+                            <i class="bi bi-person-badge me-1"></i>
+                            Drivers
+                        </a>
+                    </li>
+
+                    <!-- Status (отдельно, может быть справа) -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'status' %}active text-danger{% endif %} fs-5"
+                           href="{{ url_for('api_project.status') }}">
+                            <i class="bi bi-activity me-1"></i>
+                            Status
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Cache Status Badge -->
+                <div class="ms-lg-3 mt-3 mt-lg-0">
+                    {% if cache_status == 'fresh' %}
+                    <span class="badge bg-success px-3 py-2">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Cache Fresh
+                    </span>
+                    {% elif cache_status == 'stale' %}
+                    <span class="badge bg-warning text-dark px-3 py-2">
+                        <i class="bi bi-exclamation-triangle me-1"></i>
+                        Cache Stale
+                    </span>
+                    {% else %}
+                    <span class="badge bg-danger px-3 py-2">
+                        <i class="bi bi-x-circle me-1"></i>
+                        No Cache
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<style>
+    .navbar-brand small {
+        font-size: 0.7rem;
+        opacity: 0.7;
+    }
+    .nav-link.active {
+        font-weight: bold;
+        position: relative;
+    }
+    .nav-link.active::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 1rem;
+        right: 1rem;
+        height: 2px;
+        background: var(--bs-danger);
+        border-radius: 2px 2px 0 0;
+    }
+    .nav-link {
+        transition: color 0.3s ease;
+        position: relative;
+        margin: 0 0.25rem;
+    }
+    .nav-link:hover {
+        color: var(--bs-danger) !important;
+    }
+    .text-secondary-emphasis {
+        color: rgba(255,255,255,0.6) !important;
+    }
+
+    @media (max-width: 991.98px) {
+        .navbar-nav {
+            padding: 1rem 0;
+        }
+        .nav-link.active::after {
+            display: none;
+        }
+        .nav-link.active {
+            background: rgba(220, 53, 69, 0.1);
+            border-radius: 5px;
+        }
+    }
+</style>

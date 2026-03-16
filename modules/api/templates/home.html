@@ -1,0 +1,452 @@
+{% extends "base_api.html" %}
+
+{% block title %}Home - Formula 1 World Championship{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+        padding: 5rem 0;
+        border-bottom: 3px solid var(--bs-danger);
+        margin-top: -1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><path d="M20 20 L80 20 L90 50 L80 80 L20 80 L10 50 L20 20" fill="none" stroke="%23dc3545" stroke-width="2"/><circle cx="20" cy="20" r="3" fill="%23dc3545"/><circle cx="80" cy="20" r="3" fill="%23dc3545"/><circle cx="90" cy="50" r="3" fill="%23dc3545"/><circle cx="80" cy="80" r="3" fill="%23dc3545"/><circle cx="20" cy="80" r="3" fill="%23dc3545"/><circle cx="10" cy="50" r="3" fill="%23dc3545"/></svg>');
+        background-size: 200px 200px;
+        background-repeat: repeat;
+        opacity: 0.1;
+        animation: slide 60s linear infinite;
+    }
+    
+    @keyframes slide {
+        from { background-position: 0 0; }
+        to { background-position: 200px 200px; }
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .f1-title {
+        font-size: 5rem;
+        font-weight: 900;
+        letter-spacing: -2px;
+        line-height: 1;
+        text-transform: uppercase;
+    }
+    
+    .f1-subtitle {
+        font-size: 1.5rem;
+        color: rgba(255,255,255,0.7);
+        border-left: 4px solid var(--bs-danger);
+        padding-left: 1.5rem;
+        margin: 2rem 0;
+    }
+    
+    .stats-banner {
+        background: rgba(0,0,0,0.3);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 50px;
+        padding: 0.5rem;
+        display: inline-flex;
+        gap: 1rem;
+        border: 1px solid rgba(255,255,255,0.1);
+        margin-bottom: 3rem;
+    }
+    
+    .stat-item {
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+    }
+    
+    .stat-item.races {
+        background: var(--bs-danger);
+    }
+    
+    .stat-number {
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    
+    .stat-label {
+        font-size: 0.8rem;
+        opacity: 0.8;
+        margin-left: 0.5rem;
+    }
+    
+    .feature-card {
+        background: rgba(255,255,255,0.03);
+        border-radius: 30px;
+        padding: 3rem 2rem;
+        height: 100%;
+        border: 1px solid rgba(255,255,255,0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--bs-danger);
+        background: rgba(220, 53, 69, 0.1);
+    }
+    
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, transparent, var(--bs-danger), transparent);
+        transform: translateX(-100%);
+        transition: transform 0.5s ease;
+    }
+    
+    .feature-card:hover::before {
+        transform: translateX(100%);
+    }
+    
+    .feature-icon {
+        font-size: 4rem;
+        color: var(--bs-danger);
+        margin-bottom: 1.5rem;
+    }
+    
+    .feature-title {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+    
+    .feature-description {
+        color: rgba(255,255,255,0.6);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+    
+    .feature-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-weight: bold;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        width: 100%;
+        border: 2px solid transparent;
+    }
+    
+    .feature-button.circuits {
+        background: var(--bs-danger);
+        color: white;
+    }
+    
+    .feature-button.circuits:hover {
+        background: transparent;
+        border-color: var(--bs-danger);
+        color: var(--bs-danger);
+    }
+    
+    .feature-button.teams {
+        background: rgba(255,255,255,0.1);
+        color: white;
+    }
+    
+    .feature-button.teams:hover {
+        background: var(--bs-danger);
+        border-color: var(--bs-danger);
+    }
+    
+    .feature-button.drivers {
+        background: transparent;
+        border: 2px solid rgba(255,255,255,0.3);
+        color: white;
+    }
+    
+    .feature-button.drivers:hover {
+        border-color: var(--bs-danger);
+        background: rgba(220, 53, 69, 0.1);
+    }
+    
+    .facts-section {
+        background: linear-gradient(135deg, #0a0a0f, #000000);
+        border-radius: 30px;
+        padding: 3rem;
+        margin: 4rem 0;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .fact-item {
+        text-align: center;
+        padding: 1.5rem;
+    }
+    
+    .fact-number {
+        font-size: 3.5rem;
+        font-weight: 900;
+        color: var(--bs-danger);
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+    
+    .fact-label {
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: rgba(255,255,255,0.5);
+    }
+    
+    .quote-section {
+        text-align: center;
+        padding: 4rem 0;
+    }
+    
+    .quote {
+        font-size: 2rem;
+        font-style: italic;
+        color: rgba(255,255,255,0.8);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .quote-author {
+        color: var(--bs-danger);
+        margin-top: 1rem;
+        font-weight: bold;
+    }
+    
+    @media (max-width: 768px) {
+        .f1-title {
+            font-size: 3rem;
+        }
+        
+        .f1-subtitle {
+            font-size: 1.2rem;
+        }
+        
+        .stats-banner {
+            flex-direction: column;
+            border-radius: 20px;
+            width: 100%;
+        }
+        
+        .feature-card {
+            padding: 2rem 1.5rem;
+        }
+        
+        .facts-section {
+            padding: 1.5rem;
+        }
+        
+        .fact-number {
+            font-size: 2.5rem;
+        }
+        
+        .quote {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container hero-content">
+        <div class="row">
+            <div class="col-lg-10 mx-auto text-center">
+                <div class="stats-banner">
+                    <span class="stat-item races">
+                        <span class="stat-number">75+</span>
+                        <span class="stat-label">YEARS</span>
+                    </span>
+                    <span class="stat-item">
+                        <span class="stat-number">24</span>
+                        <span class="stat-label">RACES/YEAR</span>
+                    </span>
+                    <span class="stat-item">
+                        <span class="stat-number">11</span>
+                        <span class="stat-label">TEAMS</span>
+                    </span>
+                    <span class="stat-item">
+                        <span class="stat-number">22</span>
+                        <span class="stat-label">DRIVERS</span>
+                    </span>
+                </div>
+                
+                <h1 class="f1-title">
+                    <span class="text-danger">FORMULA 1</span>
+                </h1>
+                
+                <div class="f1-subtitle mx-auto" style="max-width: 600px;">
+                    The pinnacle of motorsport — where speed meets precision, and legends are born
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<main class="container py-5">
+    <!-- What is F1 Section -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h2 class="display-5 fw-bold mb-4">What is <span class="text-danger">Formula 1</span>?</h2>
+            <p class="lead text-secondary-emphasis mb-4">
+                Formula 1 is the highest class of international racing for open-wheel single-seater formula racing cars. 
+                It's a global spectacle that combines cutting-edge technology, incredible human skill, and pure adrenaline.
+            </p>
+        </div>
+    </div>
+    
+    <!-- Why It's Awesome -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="feature-card text-center h-100">
+                <div class="feature-icon">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                </div>
+                <h3 class="feature-title">Speed</h3>
+                <p class="feature-description">
+                    F1 cars are the fastest racing machines on the planet, reaching speeds of over 230 mph (370 km/h). 
+                    The acceleration and braking forces push drivers to their physical limits.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="feature-card text-center h-100">
+                <div class="feature-icon">
+                    <i class="bi bi-gear-wide-connected"></i>
+                </div>
+                <h3 class="feature-title">Technology</h3>
+                <p class="feature-description">
+                    The pinnacle of automotive engineering. Hybrid power units, advanced aerodynamics, and data analytics 
+                    make F1 a moving laboratory for future road car technologies.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="feature-card text-center h-100">
+                <div class="feature-icon">
+                    <i class="bi bi-trophy-fill"></i>
+                </div>
+                <h3 class="feature-title">Drama</h3>
+                <p class="feature-description">
+                    Rivalries, controversies, and unexpected victories. Every race weekend tells a unique story of 
+                    human triumph and heartbreak at 200 miles per hour.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Facts -->
+    <div class="facts-section">
+        <div class="row g-4">
+            <div class="col-md-3 col-6">
+                <div class="fact-item">
+                    <div class="fact-number">1950</div>
+                    <div class="fact-label">First Season</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="fact-item">
+                    <div class="fact-number">34</div>
+                    <div class="fact-label">Countries</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="fact-item">
+                    <div class="fact-number">1000+</div>
+                    <div class="fact-label">Grands Prix</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="fact-item">
+                    <div class="fact-number">5</div>
+                    <div class="fact-label">Continents</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation Cards -->
+    <h2 class="text-center fw-bold mb-5">Explore F1 World</h2>
+    
+    <div class="row g-4 mb-5">
+        <!-- Circuits Card -->
+        <div class="col-md-4">
+            <div class="feature-card text-center">
+                <div class="feature-icon">
+                    <i class="bi bi-map"></i>
+                </div>
+                <h3 class="feature-title">Circuits</h3>
+                <p class="feature-description">
+                    Discover iconic tracks from Monaco to Silverstone. Each circuit has its own character, challenges, and history.
+                </p>
+                <a href="{{ url_for('api_project.all_circuits') }}" class="feature-button circuits">
+                    <span>EXPLORE CIRCUITS</span>
+                    <i class="bi bi-arrow-right-short fs-3"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Teams Card -->
+        <div class="col-md-4">
+            <div class="feature-card text-center">
+                <div class="feature-icon">
+                    <i class="bi bi-tools"></i>
+                </div>
+                <h3 class="feature-title">Teams</h3>
+                <p class="feature-description">
+                    Meet the constructors: from legendary names like Ferrari and McLaren to modern powerhouses like Red Bull and Mercedes.
+                </p>
+                <a href="{{ url_for('api_project.all_teams') }}" class="feature-button teams">
+                    <span>VIEW TEAMS</span>
+                    <i class="bi bi-arrow-right-short fs-3"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Drivers Card -->
+        <div class="col-md-4">
+            <div class="feature-card text-center">
+                <div class="feature-icon">
+                    <i class="bi bi-person-badge"></i>
+                </div>
+                <h3 class="feature-title">Drivers</h3>
+                <p class="feature-description">
+                    The heroes behind the wheel. From world champions to rising stars, discover the drivers who risk it all for glory.
+                </p>
+                <a href="{{ url_for('api_project.drivers_search') }}" class="feature-button drivers">
+                    <span>MEET DRIVERS</span>
+                    <i class="bi bi-arrow-right-short fs-3"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quote Section -->
+    <div class="quote-section">
+        <div class="quote">
+            "Formula 1 is like a love story. It's exciting, it's passionate, and sometimes it breaks your heart."
+        </div>
+        <div class="quote-author">— Toto Wolff, Mercedes F1 Team Principal</div>
+    </div>
+</main>
+{% endblock %}

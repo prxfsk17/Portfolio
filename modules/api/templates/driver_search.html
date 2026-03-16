@@ -1,0 +1,268 @@
+{% extends "base_api.html" %}
+
+{% block title %}Find F1 Driver{% endblock %}
+
+{% block extra_css %}
+<style>
+    .search-header {
+        background: linear-gradient(135deg, #0a0a0f, #1a1a2e);
+        padding: 5rem 0;
+        border-bottom: 3px solid var(--bs-danger);
+        margin-top: -1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .search-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><circle cx="50" cy="50" r="40" fill="none" stroke="%23dc3545" stroke-width="2"/><circle cx="50" cy="50" r="20" fill="none" stroke="%23dc3545" stroke-width="2"/><line x1="10" y1="50" x2="90" y2="50" stroke="%23dc3545" stroke-width="2"/><line x1="50" y1="10" x2="50" y2="90" stroke="%23dc3545" stroke-width="2"/></svg>');
+        background-size: 100px 100px;
+        opacity: 0.1;
+    }
+
+    .search-container {
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+
+    .search-title {
+        font-size: 3.5rem;
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+        color: white;
+    }
+
+    .search-subtitle {
+        font-size: 1.2rem;
+        color: rgba(255,255,255,0.7);
+        margin-bottom: 2rem;
+    }
+
+    .search-form {
+        background: rgba(255,255,255,0.05);
+        border-radius: 60px;
+        padding: 0.5rem;
+        border: 2px solid rgba(255,255,255,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .search-form:focus-within {
+        border-color: var(--bs-danger);
+        box-shadow: 0 0 30px rgba(220, 53, 69, 0.3);
+    }
+
+    .search-input {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        padding: 1rem 1.5rem;
+        width: 100%;
+    }
+
+    .search-input:focus {
+        outline: none;
+    }
+
+    .search-input::placeholder {
+        color: rgba(255,255,255,0.3);
+    }
+
+    .search-button {
+        background: var(--bs-danger);
+        border: none;
+        color: white;
+        padding: 1rem 2.5rem;
+        border-radius: 50px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+
+    .search-button:hover {
+        background: #bb2d3b;
+        transform: scale(1.05);
+    }
+
+    .search-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .requirements {
+        text-align: left;
+        margin-top: 1rem;
+        color: rgba(255,255,255,0.5);
+        font-size: 0.9rem;
+    }
+
+    .requirements i {
+        color: var(--bs-danger);
+        margin-right: 0.5rem;
+    }
+
+    .examples {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .example-badge {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        color: rgba(255,255,255,0.7);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .example-badge:hover {
+        background: var(--bs-danger);
+        color: white;
+        border-color: var(--bs-danger);
+    }
+
+    .error-message {
+        background: rgba(220, 53, 69, 0.1);
+        border: 1px solid var(--bs-danger);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-top: 2rem;
+        text-align: center;
+    }
+
+    .error-message i {
+        font-size: 3rem;
+        color: var(--bs-danger);
+        margin-bottom: 1rem;
+    }
+
+    .error-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--bs-danger);
+        margin-bottom: 0.5rem;
+    }
+
+    .error-text {
+        color: rgba(255,255,255,0.7);
+        margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .search-title {
+            font-size: 2.5rem;
+        }
+
+        .search-form {
+            flex-direction: column;
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+
+        .search-input {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 60px;
+            margin-bottom: 1rem;
+        }
+
+        .search-button {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Search Header -->
+<section class="search-header">
+    <div class="container">
+        <div class="search-container text-center">
+            <h1 class="search-title">
+                Find <span class="text-danger">F1 Driver</span>
+            </h1>
+
+            <p class="search-subtitle">
+                Search by driver name to get detailed information about their career, statistics, and achievements
+            </p>
+
+            <!-- Search Form -->
+            <form action="{{ url_for('api_project.search_driver') }}" method="GET" class="search-form d-flex align-items-center">
+                <input type="text"
+                       name="search"
+                       class="search-input flex-grow-1"
+                       placeholder="e.g., lewi, hamilton, verstappen"
+                       minlength="3"
+                       required
+                       value="{{ search_query or '' }}">
+                <button type="submit" class="search-button">
+                    <i class="bi bi-search me-2"></i>
+                    Find Driver
+                </button>
+            </form>
+
+            <!-- Requirements -->
+            <div class="requirements">
+                <i class="bi bi-info-circle"></i>
+                Minimum 3 characters required
+            </div>
+
+            <!-- Error Message (if any) -->
+            {% if error %}
+            <div class="error-message">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <div class="error-title">Driver Not Found</div>
+                <div class="error-text">{{ error }}</div>
+                <a href="{{ url_for('api_project.drivers_search') }}" class="btn btn-outline-danger">
+                    <i class="bi bi-arrow-repeat me-2"></i>
+                    Try Another Search
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Info Section -->
+<section class="container py-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="text-center">
+                <i class="bi bi-person-circle text-danger fs-1 mb-3"></i>
+                <h4>Quick Search</h4>
+                <p class="text-secondary-emphasis">Find any F1 driver by typing part of their name</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="text-center">
+                <i class="bi bi-trophy text-danger fs-1 mb-3"></i>
+                <h4>Full Statistics</h4>
+                <p class="text-secondary-emphasis">Get complete career stats, podiums, and championships</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="text-center">
+                <i class="bi bi-clock-history text-danger fs-1 mb-3"></i>
+                <h4>Team History</h4>
+                <p class="text-secondary-emphasis">See all teams the driver has raced for throughout their career</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

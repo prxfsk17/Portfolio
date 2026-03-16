@@ -1,0 +1,376 @@
+{% extends "base_api.html" %}
+
+{% block title %}System Status - F1 Circuits{% endblock %}
+
+{% block extra_css %}
+<style>
+    .status-hero {
+        background: linear-gradient(135deg, #0a0a0f, #1a1a2e);
+        padding: 3rem 0;
+        border-bottom: 3px solid var(--bs-danger);
+        margin-top: -1.5rem;
+    }
+
+    .status-card {
+        background: rgba(255,255,255,0.03);
+        border-radius: 20px;
+        padding: 2rem;
+        height: 100%;
+        border: 1px solid rgba(255,255,255,0.05);
+        transition: transform 0.3s, border-color 0.3s;
+        backdrop-filter: blur(10px);
+    }
+    .status-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--bs-danger);
+    }
+
+    .status-card.cache-fresh {
+        border-left: 5px solid #28a745;
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(255,255,255,0.03));
+    }
+    .status-card.cache-stale {
+        border-left: 5px solid #ffc107;
+        background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255,255,255,0.03));
+    }
+    .status-card.cache-error {
+        border-left: 5px solid #dc3545;
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(255,255,255,0.03));
+    }
+
+    .status-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    .badge-fresh {
+        background: rgba(40, 167, 69, 0.2);
+        color: #28a745;
+        border: 1px solid #28a745;
+    }
+    .badge-stale {
+        background: rgba(255, 193, 7, 0.2);
+        color: #ffc107;
+        border: 1px solid #ffc107;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .info-row:last-child {
+        border-bottom: none;
+    }
+    .info-label {
+        color: var(--bs-secondary-color);
+        font-size: 0.95rem;
+    }
+    .info-value {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .action-button {
+        padding: 1rem;
+        border-radius: 15px;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        border: 2px solid transparent;
+    }
+    .action-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+    .action-button-primary {
+        background: var(--bs-danger);
+        color: white;
+    }
+    .action-button-primary:hover {
+        background: #bb2d3b;
+        border-color: white;
+    }
+    .action-button-secondary {
+        background: rgba(255,255,255,0.1);
+        color: white;
+    }
+    .action-button-secondary:hover {
+        background: rgba(255,255,255,0.2);
+        border-color: var(--bs-danger);
+    }
+
+    .metric-card {
+        background: rgba(0,0,0,0.3);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+    .metric-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--bs-danger);
+        line-height: 1.2;
+    }
+    .metric-label {
+        color: var(--bs-secondary-color);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 768px) {
+        .status-card {
+            padding: 1.5rem;
+        }
+        .metric-value {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="status-hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+
+                <h1 class="display-3 fw-bold mb-4">
+                    Server <span class="text-danger">Status</span>
+                </h1>
+
+                <p class="lead fs-4 text-secondary-emphasis">
+                    Real-time information about our cache system, data freshness,
+                    and API connectivity status.
+                </p>
+            </div>
+
+            <div class="col-lg-4 text-center mt-5 mt-lg-0">
+                <div class="metric-card">
+                    <i class="bi bi-hdd-stack-fill text-danger fs-1 mb-3"></i>
+                    <div class="metric-value">{{ circuits_count }}</div>
+                    <div class="metric-label">Circuits in Cache</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Status Content -->
+<main class="container py-5">
+    <div class="row g-4">
+        <!-- Cache Status Card -->
+        <div class="col-lg-6">
+            <div class="status-card
+                {% if cache_age_seconds is none %}
+                    cache-error
+                {% elif cache_age_seconds < 300 %}
+                    cache-fresh
+                {% else %}
+                    cache-stale
+                {% endif %}">
+
+                <div class="status-icon bg-danger bg-opacity-25 text-danger">
+                    <i class="bi bi-hdd-stack"></i>
+                </div>
+
+                <h3 class="fw-bold mb-2">Cache Status</h3>
+
+                <div class="mb-4">
+                    {% if cache_age_seconds is none %}
+                    <span class="status-badge badge-stale">
+                        <i class="bi bi-exclamation-triangle me-2"></i>No Data
+                    </span>
+                    {% elif cache_age_seconds < 300 %}
+                    <span class="status-badge badge-fresh">
+                        <i class="bi bi-check-circle-fill me-2"></i>Fresh
+                    </span>
+                    {% else %}
+                    <span class="status-badge badge-stale">
+                        <i class="bi bi-clock-history me-2"></i>Stale
+                    </span>
+                    {% endif %}
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="bi bi-database me-2 text-danger"></i>
+                            Circuits in Cache
+                        </span>
+                        <span class="info-value">{{ circuits_count }}</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="bi bi-calendar-check me-2 text-danger"></i>
+                            Last Update
+                        </span>
+                        <span class="info-value">
+                            {% if last_update and last_update != 'Never' %}
+                                {{ last_update|strftime }}
+                            {% else %}
+                                Never
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="bi bi-hourglass-split me-2 text-danger"></i>
+                            Cache Age
+                        </span>
+                        <span class="info-value">
+                            {% if cache_age_seconds %}
+                                {% set minutes = (cache_age_seconds // 60)|int %}
+                                {% set hours = (minutes // 60)|int %}
+                                {% if hours > 0 %}
+                                    {{ hours }}h {{ minutes % 60 }}m
+                                {% else %}
+                                    {{ minutes }} minutes
+                                {% endif %}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="bi bi-arrow-repeat me-2 text-danger"></i>
+                            Auto-refresh
+                        </span>
+                        <span class="info-value">
+                            {% if cache_age_seconds and cache_age_seconds < 300 %}
+                                <span class="text-success">On schedule</span>
+                            {% else %}
+                                <span class="text-warning">Needed</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Status Card -->
+        <div class="col-lg-6">
+            <div class="status-card">
+                <div class="status-icon bg-info bg-opacity-25 text-info">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                </div>
+
+                <h3 class="fw-bold mb-2">API Information</h3>
+
+                <div class="mb-4">
+                    <span class="status-badge badge-fresh">
+                        <i class="bi bi-check-circle-fill me-2"></i>Connected
+                    </span>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="bi bi-link-45deg me-2 text-info"></i>
+                            API Endpoint
+                        </span>
+                        <span class="info-value">
+                            <code>v1.formula-1.api-sports.io</code>
+                        </span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="bi bi-shield-check me-2 text-info"></i>
+                            Authentication
+                        </span>
+                        <span class="info-value text-success">
+                            <i class="bi bi-check-circle-fill me-1"></i>
+                            Valid
+                        </span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="bi bi-speedometer2 me-2 text-info"></i>
+                            Data Source
+                        </span>
+                        <span class="info-value">API-Sports F1</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="bi bi-arrow-repeat me-2 text-info"></i>
+                            Update Interval
+                        </span>
+                        <span class="info-value">On-demand + Force refresh</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="col-12 mt-4">
+            <div class="status-card">
+                <h3 class="fw-bold mb-4">
+                    <i class="bi bi-lightning-charge-fill text-danger me-2"></i>
+                    Quick Actions
+                </h3>
+
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <a href="{{ url_for('api_project.force_refresh') }}" class="action-button action-button-primary text-decoration-none w-100">
+                            <i class="bi bi-arrow-repeat fs-5"></i>
+                            Force Refresh Cache
+                        </a>
+                    </div>
+
+                    <div class="col-md-4">
+                        <a href="{{ url_for('api_project.all_circuits') }}" class="action-button action-button-secondary text-decoration-none w-100">
+                            <i class="bi bi-grid-3x3-gap-fill fs-5"></i>
+                            View All Circuits
+                        </a>
+                    </div>
+
+                    <div class="col-md-4">
+                        <a href="{{ url_for('api_project.home') }}" class="action-button action-button-secondary text-decoration-none w-100">
+                            <i class="bi bi-house-door-fill fs-5"></i>
+                            Return Home
+                        </a>
+                    </div>
+                </div>
+
+                <div class="alert alert-info bg-dark border-info mt-4 mb-0">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-info-circle-fill fs-4 me-3"></i>
+                        <div>
+                            <strong>Note:</strong> Force refresh will fetch new data from the F1 API.
+                            This may take a few moments depending on API response time.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+

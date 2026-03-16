@@ -1,0 +1,355 @@
+{% extends "base_api.html" %}
+
+{% block title %}F1 Circuits - All Circuits{% endblock %}
+
+{% block extra_css %}
+<style>
+    .circuit-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    .circuit-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(220, 53, 69, 0.2) !important;
+        border-color: var(--bs-danger);
+    }
+    .circuit-image {
+        height: 220px;
+        object-fit: cover;
+        object-position: center;
+        border-bottom: 3px solid var(--bs-danger);
+    }
+    .circuit-image-placeholder {
+        height: 220px;
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 3px solid var(--bs-danger);
+    }
+    .badge-custom {
+        font-size: 0.8rem;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+    }
+    .record-badge {
+        background: linear-gradient(135deg, var(--bs-danger), #a71d2a);
+        color: white;
+        border: none;
+    }
+    .country-badge {
+        background: linear-gradient(135deg, #20c997, #0d6efd);
+        color: white;
+    }
+    .stat-number {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: var(--bs-danger);
+        line-height: 1.2;
+    }
+    .stat-label {
+        font-size: 0.8rem;
+        color: var(--bs-secondary-color);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .jumbotron-custom {
+        background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+        border-bottom: 3px solid var(--bs-danger);
+        padding: 4rem 0;
+        margin-top: -1.5rem;
+    }
+    .lap-record {
+        background: rgba(220, 53, 69, 0.1);
+        border-left: 4px solid var(--bs-danger);
+        border-radius: 0 10px 10px 0;
+    }
+    .stats-footer {
+        background: rgba(0,0,0,0.3);
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding: 1.5rem 0;
+        margin-top: 3rem;
+    }
+    .stat-block {
+        background: rgba(0,0,0,0.5);
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 1px solid rgba(255,255,255,0.05);
+        transition: transform 0.3s;
+    }
+    .stat-block:hover {
+        transform: translateY(-5px);
+        border-color: var(--bs-danger);
+    }
+    .empty-state {
+        padding: 5rem 2rem;
+        background: rgba(255,255,255,0.02);
+        border-radius: 20px;
+        border: 2px dashed rgba(255,255,255,0.1);
+    }
+    .card-footer-badge {
+        background: rgba(0,0,0,0.5);
+        color: var(--bs-secondary-color);
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Jumbotron/Hero Section -->
+<section class="jumbotron-custom">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="badge bg-dark border border-light px-3 py-2">
+                        <i class="bi bi-grid-3x3-gap-fill me-1"></i>
+                        {{ circuits|length }} ACTIVE CIRCUITS
+                    </span>
+                </div>
+
+                <h1 class="display-3 fw-bold mb-4">
+                    Formula 1 <span class="text-danger">Circuits</span>
+                </h1>
+
+                <p class="lead fs-4 mb-4 text-secondary-emphasis">
+                    Discover the world's most challenging and historic Formula 1 tracks.
+                    From classic circuits to modern facilities, explore detailed information
+                    about each venue that hosts the pinnacle of motorsport.
+                </p>
+
+                <div class="d-flex flex-wrap gap-3">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        <span>Real-time data</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        <span>Lap records</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        <span>Circuit specs</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 text-center mt-5 mt-lg-0">
+                <div class="position-relative">
+                    <i class="bi bi-trophy-fill display-1 text-danger opacity-50"></i>
+                    <div class="position-absolute top-50 start-50 translate-middle">
+                        <span class="display-3 fw-bold text-light">{{ circuits|length }}</span>
+                        <p class="text-secondary-emphasis mb-0">Total Circuits</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<main class="container py-5">
+    <!-- Alert for errors (без автоматического закрытия) -->
+    {% if error %}
+    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+            <div>
+                <strong>Error loading circuits:</strong> {{ error }}
+                <br>
+                <small>Showing sample data for demonstration purposes.</small>
+            </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <!-- Circuits Grid -->
+    {% if circuits %}
+    <div class="row g-4">
+        {% for circuit in circuits %}
+        <div class="col-xl-4 col-md-6">
+            <div class="card circuit-card bg-dark text-light h-100">
+                <!-- Circuit Image or Placeholder -->
+                {% if circuit.image %}
+                <img src="{{ circuit.image }}"
+                     class="card-img-top circuit-image"
+                     alt="{{ circuit.name }}"
+                     loading="lazy">
+                {% else %}
+                <div class="circuit-image-placeholder">
+                    <i class="bi bi-map display-1 text-secondary"></i>
+                </div>
+                {% endif %}
+
+                <div class="card-body d-flex flex-column">
+                    <!-- Title and Badges -->
+                    <h4 class="card-title fw-bold mb-3">{{ circuit.name }}</h4>
+
+                    <div class="mb-3">
+                        {% if circuit.competition.location and circuit.competition.location.country %}
+                        <span class="badge country-badge badge-custom me-2 mb-2">
+                            <i class="bi bi-geo-alt-fill me-1"></i>
+                            {{ circuit.competition.location.country }}
+                        </span>
+                        {% endif %}
+
+                        <span class="badge bg-secondary badge-custom mb-2">
+                            <i class="bi bi-flag-fill me-1"></i>
+                            {{ circuit.competition.name }}
+                        </span>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="row g-2 mb-4">
+                        <div class="col-6">
+                            <div class="text-center p-3 bg-black bg-opacity-50 rounded">
+                                <div class="stat-number">{{ circuit.length or 'N/A' }}</div>
+                                <div class="stat-label">Length</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-3 bg-black bg-opacity-50 rounded">
+                                <div class="stat-number">{{ circuit.laps or 'N/A' }}</div>
+                                <div class="stat-label">Laps</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lap Record (if available) -->
+                    {% if circuit.lap_record %}
+                    <div class="lap-record p-3 rounded mb-4">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-stopwatch-fill text-danger me-2"></i>
+                            <h6 class="mb-0 fw-bold">LAP RECORD</h6>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="fw-bold fs-4">{{ circuit.lap_record.time }}</div>
+                                <small class="text-secondary-emphasis">{{ circuit.lap_record.driver }}</small>
+                            </div>
+                            <span class="badge record-badge px-3 py-2">
+                                {{ circuit.lap_record.year }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Circuit Details -->
+                    <ul class="list-group list-group-flush bg-transparent mb-4">
+                        {% if circuit.first_grand_prix %}
+                        <li class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between px-0">
+                            <span class="text-secondary-emphasis">First Grand Prix</span>
+                            <span class="fw-bold">{{ circuit.first_grand_prix }}</span>
+                        </li>
+                        {% endif %}
+
+                        {% if circuit.capacity %}
+                        <li class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between px-0">
+                            <span class="text-secondary-emphasis">Capacity</span>
+                            <span class="fw-bold">{{ "{:,}".format(circuit.capacity) }} spectators</span>
+                        </li>
+                        {% endif %}
+
+                        {% if circuit.opened %}
+                        <li class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between px-0">
+                            <span class="text-secondary-emphasis">Opened</span>
+                            <span class="fw-bold">{{ circuit.opened }}</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+
+                    <!-- Action Button -->
+                    <div class="mt-auto">
+                        <a href="{{ url_for('api_project.circuit_detail', circuit_id=circuit.id) }}"
+                           class="btn btn-outline-danger w-100 py-3 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            View Circuit Details
+                            <i class="bi bi-arrow-right-short ms-2 fs-5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card Footer -->
+                <div class="card-footer card-footer-badge border-top border-secondary">
+                    <small>
+                        <i class="bi bi-clock-history me-1"></i>
+                        Circuit ID: #{{ circuit.id }}
+                    </small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Statistics Footer -->
+    <div class="stats-footer mt-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="stat-block text-center">
+                    <i class="bi bi-geo-alt-fill text-danger fs-1 mb-3"></i>
+                    <h3 class="text-danger fw-bold mb-2">{{ circuits|length }}</h3>
+                    <p class="text-secondary-emphasis mb-0">Total Circuits Worldwide</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="stat-block text-center">
+                    <i class="bi bi-people-fill text-danger fs-1 mb-3"></i>
+                    <h3 class="text-danger fw-bold mb-2">
+                        {% set total_capacity = circuits|sum(attribute='capacity') %}
+                        {% if total_capacity > 0 %}
+                        {{ "{:,.0f}".format(total_capacity) }}
+                        {% else %}
+                        N/A
+                        {% endif %}
+                    </h3>
+                    <p class="text-secondary-emphasis mb-0">Total Spectator Capacity</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="stat-block text-center">
+                    <i class="bi bi-flag-fill text-danger fs-1 mb-3"></i>
+                    <h3 class="text-danger fw-bold mb-2">
+                        {% set unique_countries = [] %}
+                        {% for circuit in circuits %}
+                            {% if circuit.competition.location and circuit.competition.location.country %}
+                                {% if circuit.competition.location.country not in unique_countries %}
+                                    {{ unique_countries.append(circuit.competition.location.country) or '' }}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ unique_countries|length }}
+                    </h3>
+                    <p class="text-secondary-emphasis mb-0">Countries Represented</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="empty-state text-center">
+        <div class="mb-4">
+            <i class="bi bi-flag display-1 text-danger opacity-50"></i>
+        </div>
+        <h3 class="mb-3">No Circuits Found</h3>
+        <p class="text-secondary-emphasis mb-4 fs-5">
+            {% if error %}
+            Unable to load circuits data. Please try again later.
+            {% else %}
+            There are no circuits to display at the moment.
+            {% endif %}
+        </p>
+        <a href="{{ url_for('api_project.force_refresh') }}" class="btn btn-danger btn-lg px-5">
+            <i class="bi bi-arrow-repeat me-2"></i>
+            Refresh Data
+        </a>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}
+

@@ -1,4 +1,6 @@
 import os
+
+import dateutil
 from dotenv import load_dotenv
 from flask import Flask, render_template, redirect, url_for, flash, request
 from forms import ContactForm
@@ -6,6 +8,7 @@ from notify import Notify
 from modules.morse import MorseConverter
 from modules.webscraping import Currencies
 from modules.automation import OnlinerParser
+from modules.api.main import api_bp
 
 projects = [
 
@@ -91,6 +94,23 @@ projects = [
         "github": "https://github.com/prxfsk17/Portfolio/blob/master/modules/automation.py",
         "slug": "automation"
     },
+    {
+        "title": "Interactive API Website (F1 Theme)",
+        "description": "A dynamic website that fetches and displays data from a public API, featuring interactive elements and custom backend logic.",
+        "image": "api_project.png",
+        "technologies": "Flask, HTML, CSS, Bootstrap, Jinja, Requests",
+        "details": "This project is a self-contained web application built with Flask. It serves multiple HTML pages, utilizes helper functions to call external APIs, processes the data, and presents it in a user-friendly interface. The project demonstrates full-stack skills, from backend server logic to frontend templating.",
+        "features": [
+            "Custom Flask server with multiple routes",
+            "Integration with external APIs",
+            "Dynamic HTML pages using Jinja templating",
+            "Data processing and visualization",
+            "Modular code structure with separate helper files",
+            "Responsive design with Bootstrap"
+        ],
+        "github": "https://github.com/prxfsk17/100DaysOfPython/tree/master/Day%2096",
+        "slug": "api-website"
+    }
 ]
 
 load_dotenv()
@@ -102,6 +122,31 @@ currency_manager = Currencies()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRET", "devkey")
+
+@app.template_filter('strftime')
+def _jinja2_filter_datetime(date, fmt=None):
+    if isinstance(date, str):
+        date = dateutil.parser.parse(date)
+    native = date.replace(tzinfo=None)
+    format = '%b %d, %Y - %H:%M'
+    return native.strftime(format)
+
+@app.template_filter('safe_int')
+def safe_int_filter(value):
+    try:
+        return int(value) if value is not None else 0
+    except:
+        return 0
+
+@app.template_filter('to_datetime')
+def to_datetime_filter(date_string):
+    if isinstance(date_string, str):
+        try:
+            from datetime import datetime
+            return datetime.strptime(date_string, '%Y-%m-%d')
+        except:
+            return None
+    return date_string
 
 @app.route("/")
 def home():
@@ -213,6 +258,8 @@ def automation():
                            result=result,
                            error=error,
                            query=query)
+
+app.register_blueprint(api_bp, url_prefix='/demo/api-website')
 
 if __name__ == "__main__":
     app.run(debug=True)

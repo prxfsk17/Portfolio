@@ -1,0 +1,381 @@
+{% extends "base_api.html" %}
+
+{% block title %}{{ team.name }} - F1 Team{% endblock %}
+
+{% block extra_css %}
+<style>
+    .team-header {
+        background: linear-gradient(135deg, #0a0a0f, #1a1a2e);
+        padding: 3rem 0;
+        border-bottom: 3px solid var(--bs-danger);
+        margin-top: -1.5rem;
+        position: relative;
+    }
+    
+    .team-header-content {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .team-logo-large {
+        width: 150px;
+        height: 150px;
+        object-fit: contain;
+        background: rgba(255,255,255,0.05);
+        border-radius: 20px;
+        padding: 1rem;
+        border: 2px solid rgba(255,255,255,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .team-logo-large:hover {
+        transform: scale(1.05);
+        border-color: var(--bs-danger);
+    }
+    
+    .team-title {
+        flex: 1;
+    }
+    
+    .team-name-large {
+        font-size: 3.5rem;
+        font-weight: 900;
+        margin-bottom: 0.5rem;
+        line-height: 1.2;
+    }
+    
+    .team-badge-large {
+        display: inline-block;
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 600;
+        margin-right: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .badge-champions-large {
+        background: linear-gradient(135deg, #ffd700, #ffa500);
+        color: black;
+    }
+    
+    .badge-year-large {
+        background: rgba(255,255,255,0.1);
+        color: var(--bs-danger);
+        border: 1px solid var(--bs-danger);
+    }
+    
+    .back-btn {
+        margin-bottom: 1rem;
+    }
+    
+    .back-btn .btn {
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .info-card {
+        background: rgba(255,255,255,0.03);
+        border-radius: 20px;
+        padding: 2rem;
+        height: 100%;
+        border: 1px solid rgba(255,255,255,0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .info-card:hover {
+        border-color: var(--bs-danger);
+        background: rgba(220, 53, 69, 0.05);
+    }
+    
+    .info-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        color: white;
+        border-bottom: 2px solid var(--bs-danger);
+        padding-bottom: 0.5rem;
+        display: inline-block;
+    }
+    
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .info-row:last-child {
+        border-bottom: none;
+    }
+    
+    .info-label {
+        color: rgba(255,255,255,0.5);
+        font-size: 1rem;
+    }
+    
+    .info-value {
+        font-weight: bold;
+        color: white;
+        font-size: 1.1rem;
+    }
+    
+    .info-value.highlight {
+        color: var(--bs-danger);
+        font-size: 1.3rem;
+    }
+    
+    .achievement-card {
+        background: linear-gradient(135deg, rgba(220,53,69,0.1), rgba(0,0,0,0.3));
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        border: 1px solid rgba(255,255,255,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .achievement-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--bs-danger);
+    }
+    
+    .achievement-number {
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--bs-danger);
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+    
+    .achievement-label {
+        color: rgba(255,255,255,0.7);
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .person-card {
+        background: rgba(255,255,255,0.03);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .person-role {
+        color: var(--bs-danger);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .person-name {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .team-header-content {
+            flex-direction: column;
+            text-align: center;
+        }
+        .team-name-large {
+            font-size: 2.5rem;
+        }
+        .team-logo-large {
+            width: 120px;
+            height: 120px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Back Button -->
+    <div class="back-btn mt-4">
+        <a href="{{ url_for('api_project.all_teams') }}" class="btn btn-outline-light bg-dark bg-opacity-50">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Teams
+        </a>
+    </div>
+</div>
+
+<!-- Team Header -->
+<section class="team-header">
+    <div class="container">
+        <div class="team-header-content">
+            <!-- Logo -->
+            {% if team.logo %}
+            <img src="{{ team.logo }}" alt="{{ team.name }} logo" class="team-logo-large" loading="lazy"
+                 onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=F1';">
+            {% else %}
+            <div class="team-logo-large d-flex align-items-center justify-content-center bg-dark">
+                <i class="bi bi-tools fs-1 text-danger"></i>
+            </div>
+            {% endif %}
+            
+            <!-- Title -->
+            <div class="team-title">
+                <h1 class="team-name-large">{{ team.name }}</h1>
+                <div>
+                    {% if team.world_championships|safe_int > 0 %}
+                    <span class="team-badge-large badge-champions-large">
+                        <i class="bi bi-trophy-fill me-2"></i>
+                        {{ team.world_championships }} World Championships
+                    </span>
+                    {% endif %}
+                    
+                    <span class="team-badge-large badge-year-large">
+                        <i class="bi bi-calendar-event me-2"></i>
+                        {% if team.first_team_entry %}
+                            F1 Entry: {{ team.first_team_entry }}
+                        {% else %}
+                            No info
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<main class="container py-5">
+    <!-- Key Achievements -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3 col-6">
+            <div class="achievement-card">
+                <div class="achievement-number">{{ team.world_championships or '0' }}</div>
+                <div class="achievement-label">World Championships</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 col-6">
+            <div class="achievement-card">
+                <div class="achievement-number">{{ team.pole_positions or '0' }}</div>
+                <div class="achievement-label">Pole Positions</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 col-6">
+            <div class="achievement-card">
+                <div class="achievement-number">{{ team.fastest_laps or '0' }}</div>
+                <div class="achievement-label">Fastest Laps</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 col-6">
+            <div class="achievement-card">
+                <div class="achievement-number">{{ team.highest_race_finish.position or 'N/A' }}</div>
+                <div class="achievement-label">Best Finish</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <!-- Team Information -->
+        <div class="col-lg-6">
+            <div class="info-card">
+                <h2 class="info-title">
+                    <i class="bi bi-info-circle-fill text-danger me-2"></i>
+                    Team Information
+                </h2>
+                
+                <div class="info-row">
+                    <span class="info-label">Base</span>
+                    <span class="info-value">{{ team.base or 'No longer exists' }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">President</span>
+                    <span class="info-value">{{ team.president or 'Not specified' }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Team Director</span>
+                    <span class="info-value">{{ team.director or 'Not specified' }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Technical Manager</span>
+                    <span class="info-value">{{ team.technical_manager or 'Not specified' }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Specifications -->
+        <div class="col-lg-6">
+            <div class="info-card">
+                <h2 class="info-title">
+                    <i class="bi bi-gear-wide-connected text-danger me-2"></i>
+                    Technical Specifications
+                </h2>
+                
+                <div class="info-row">
+                    <span class="info-label">Chassis</span>
+                    <span class="info-value">{{ team.chassis or 'N/A' }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Engine</span>
+                    <span class="info-value">{{ team.engine or 'N/A' }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Tyres</span>
+                    <span class="info-value">{{ team.tyres or 'Pirelli' }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">First Entry</span>
+                    <span class="info-value">{{ team.first_team_entry }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Key People -->
+        <div class="col-12">
+            <div class="info-card">
+                <h2 class="info-title">
+                    <i class="bi bi-people-fill text-danger me-2"></i>
+                    Key Personnel
+                </h2>
+                
+                <div class="row g-4">
+                    {% if team.president %}
+                    <div class="col-md-4">
+                        <div class="person-card">
+                            <div class="person-role">President</div>
+                            <div class="person-name">{{ team.president }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if team.director %}
+                    <div class="col-md-4">
+                        <div class="person-card">
+                            <div class="person-role">Team Principal</div>
+                            <div class="person-name">{{ team.director }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if team.technical_manager %}
+                    <div class="col-md-4">
+                        <div class="person-card">
+                            <div class="person-role">Technical Director</div>
+                            <div class="person-name">{{ team.technical_manager }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
