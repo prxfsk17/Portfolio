@@ -1,8 +1,8 @@
 import os
 
-import dateutil
+import dateutil.parser
 from dotenv import load_dotenv
-from flask import Flask, render_template, redirect, url_for, flash, request
+from flask import Flask, render_template, redirect, url_for, flash, request, abort
 from forms import ContactForm
 from notify import Notify
 from modules.morse import MorseConverter
@@ -163,6 +163,8 @@ def project_page(slug):
         if p["slug"] == slug:
             project = p
             break
+    if project is None:
+        abort(404)
     return render_template("project.html", project=project)
 
 @app.route("/demo/morse", methods=["POST", "GET"])

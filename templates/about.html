@@ -16,18 +16,17 @@ About me
             <p class="intro">
                 <span class="greeting">Hello! I'm</span>
                 <span class="name">Haiko Aliaksandr</span><br>
-                <span class="details">21-year-old BSUIR graduate (2025) with a Bachelor's in Software Engineering</span>
+                <span class="details">Software engineer · BSUIR graduate (2025) · almost 3 years of C#/.NET experience, moving to Python backend</span>
             </p>
         </div>
 
         <div class="info-grid">
             <div class="info-card">
                 <div class="card-icon">💼</div>
-                <h3>Python Experience</h3>
+                <h3>Focus</h3>
                 <p>
-                    I'm particularly passionate about <span class="highlight">web development</span> and also very
-                    interested in exploring
-                    <span class="highlight">Data Science</span>.
+                    I'm moving from <span class="highlight">C#/.NET desktop development</span> to
+                    <span class="highlight">Python backend</span>: REST APIs, web apps, automation and SQL.
                 </p>
                 <div class="project-link">
                     <a href="{{ url_for('portfolio') }}" class="portfolio-link">
@@ -40,17 +39,18 @@ About me
                 <div class="card-icon">🐍</div>
                 <h3>Tech Stack</h3>
                 <div class="tech-tags">
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">SQLAlchemy</span>
+                    <span class="tech-tag">Git</span>
                     <span class="tech-tag">Flask</span>
                     <span class="tech-tag">Jinja</span>
                     <span class="tech-tag">WTForms</span>
                     <span class="tech-tag">REST APIs</span>
                     <span class="tech-tag">BeautifulSoup</span>
                     <span class="tech-tag">Selenium</span>
-                    <span class="tech-tag">Turtle</span>
-                    <span class="tech-tag">Tkinter</span>
                 </div>
                 <div class="learning-section">
-                    <span class="learning-badge">📚 Currently learning: Data Science</span>
+                    <span class="learning-badge">📚 Currently learning: PostgreSQL, Docker, CI/CD, AWS</span>
                 </div>
             </div>
 
@@ -58,23 +58,12 @@ About me
                 <div class="card-icon">💬</div>
                 <h3>Languages</h3>
                 <ul class="language-list">
-                    <li>
-                        <img src="{{ url_for('static', filename='img/by.png') }}" alt="Belarusian flag"
-                             class="lang-flag">
-                        Belarusian <span class="lang-level">Native</span>
-                    </li>
-                    <li>
-                        <img src="{{ url_for('static', filename='img/uk.png') }}" alt="English flag" class="lang-flag">
-                        English <span class="lang-level">B1-B2</span>
-                    </li>
-                    <li>
-                        <img src="{{ url_for('static', filename='img/pl.png') }}" alt="Polish flag" class="lang-flag">
-                        Polish <span class="lang-level">A1 (Still learning)</span>
-                    </li>
-                    <li>
-                        <img src="{{ url_for('static', filename='img/it.png') }}" alt="Italian flag" class="lang-flag">
-                        Italian <span class="lang-level">Learning (for myself)</span>
-                    </li>
+                    <li><img src="{{ url_for('static', filename='img/by.png') }}" alt="Belarusian flag"
+                             class="lang-flag">Belarusian <span class="lang-level">Native</span></li>
+                    <li><img src="{{ url_for('static', filename='img/uk.png') }}" alt="English flag" class="lang-flag">English
+                        <span class="lang-level">B1+</span></li>
+                    <li><img src="{{ url_for('static', filename='img/pl.png') }}" alt="Polish flag" class="lang-flag">Polish
+                        <span class="lang-level">A2 (learning)</span></li>
                 </ul>
             </div>
 
@@ -89,8 +78,9 @@ About me
             <div class="info-card">
                 <div class="card-icon">🔧</div>
                 <h3>Previous Experience</h3>
-                <p><strong>2 years</strong> as C# Developer</p>
-                <p>Now transitioning to Python development</p>
+                <p><strong>Almost 3 years</strong> as C# / .NET developer at BEMN</p>
+                <p>Desktop software for microprocessor relays (WinForms, Modbus RTU/TCP)</p>
+                <p class="small-note">Now moving to Python backend development</p>
             </div>
 
             <div class="info-card">
@@ -109,14 +99,14 @@ About me
             <div class="goal-content">
                 <h3>My Goal</h3>
                 <p class="goal-text">
-                    To join a development team in Poland as a <span class="highlight">motivated, responsible, and hardworking</span>
-                    Junior Python Developer.
+                    To join a development team in Poland as a <span class="highlight">Python Backend Developer</span>
+                    (junior/mid level). I'm also open to C#/.NET roles.
                 </p>
                 <a href="{{ url_for('contact') }}">
                     <div class="poland-highlight">
                         <img src="{{ url_for('static', filename='img/pl.png') }}" alt="Poland flag"
                              class="highlight-flag">
-                        Ready to relocate and start immediately!
+                        Open to relocation to Poland - get in touch
                     </div>
                 </a>
             </div>

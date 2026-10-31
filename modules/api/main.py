@@ -182,6 +182,3 @@ def status():
     }
     return render_template('status.html', **cache_info)
 
-if __name__ == '__main__':
-    update_circuits_info()
-    api_bp.run(debug=True)

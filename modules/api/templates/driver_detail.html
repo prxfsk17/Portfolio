@@ -270,7 +270,7 @@
         
         <div class="col-md-3 col-6">
             <div class="achievement-card">
-                <div class="achievement-number">{{ driver.highest_race_finish.number or '0' }}</div>
+                <div class="achievement-number">{{ driver.highest_race_finish.number if driver.highest_race_finish.position == 1 else '0' }}</div>
                 <div class="achievement-label">Race Wins</div>
             </div>
         </div>
@@ -335,7 +335,7 @@
                 
                 <div class="info-row">
                     <span class="info-label">Race Wins</span>
-                    <span class="info-value highlight">{{ driver.highest_race_finish.number or '0' }}</span>
+                    <span class="info-value highlight">{{ driver.highest_race_finish.number if driver.highest_race_finish.position == 1 else '0' }}</span>
                 </div>
                 
                 <div class="info-row">
@@ -344,7 +344,7 @@
                 </div>
                 
                 <div class="info-row">
-                    <span class="info-label">Pole Positions</span>
+                    <span class="info-label">Best Grid Position</span>
                     <span class="info-value highlight">{{ driver.highest_grid_position or '0' }}</span>
                 </div>
                 
