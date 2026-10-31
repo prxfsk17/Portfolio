@@ -78,7 +78,7 @@ class OnlinerParser:
         except Exception as e:
             raise
 
-    def _safe_click(self, xpath: str, max_attempts: int = 3, wait_time: int = 2) -> bool:
+    def _safe_click(self, xpath: str, max_attempts: int = 2, wait_time: int = 2) -> bool:
 
         for attempt in range(max_attempts):
             try:
@@ -86,7 +86,6 @@ class OnlinerParser:
                     EC.presence_of_element_located((By.XPATH, xpath))
                 )
                 self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
-                time.sleep(0.5)
 
                 element = WebDriverWait(self.driver, wait_time).until(
                     EC.element_to_be_clickable((By.XPATH, xpath))
@@ -96,7 +95,6 @@ class OnlinerParser:
             except (StaleElementReferenceException, TimeoutException) as e:
                 if attempt == max_attempts - 1:
                     return False
-                time.sleep(1)
         return False
 
     def _handle_cookies(self) -> None:
@@ -111,16 +109,16 @@ class OnlinerParser:
     def _get_ai_description(self) -> Optional[str]:
         try:
             self._safe_click(
-                '//*[@id="container"]/div/div/div/div/div[2]/div[1]/main/div/div/div[1]/div[2]/div[4]/div[4]/a'
+                '//*[@id="container"]/div/div/div/div/div[2]/div[1]/main/div/div/div[1]/div/div[4]/div[4]/a'
             )
 
             description_element = WebDriverWait(self.driver, 5).until(
-                EC.presence_of_element_located((By.XPATH, "/html/body/div[4]/div[2]/div/div"))
+                EC.presence_of_element_located((By.XPATH, "/html/body/div[8]/div[2]/div/div/div[3]"))
             )
             description = description_element.text
 
             close_button = WebDriverWait(self.driver, 5).until(
-                EC.element_to_be_clickable((By.XPATH, '/html/body/div[4]/div[2]/span'))
+                EC.element_to_be_clickable((By.XPATH, '/html/body/div[8]/div[2]/span'))
             )
             close_button.click()
 
@@ -132,14 +130,14 @@ class OnlinerParser:
     def _get_price_statistics(self) -> Optional[PriceStatistics]:
         try:
             if not self._safe_click(
-                    '//*[@id="container"]/div/div/div/div/div[2]/div[1]/main/div/div/aside/div[last()]/a'
+                    '//*[@id="container"]/div/div/div/div/div[2]/div[1]/main/div/div/aside/div/div[5]/a'
             ):
                 return None
 
             time.sleep(2)
 
             self._safe_click(
-                '//*[@id="container"]/div/div/div/div/div[2]/div[1]/main/div/div/div[2]/div[1]/div/div[3]/div/div[3]/div[6]/span'
+                '//*[@id="container"]/div/div/div/div/div[2]/div[1]/main/div/div/div[2]/div[1]/div/div[3]/div/div[3]/div[9]/span'
             )
 
             time.sleep(1)

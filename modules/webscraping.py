@@ -5,6 +5,7 @@ import requests
 import os
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
+import re
 
 class Currencies:
 
@@ -93,8 +94,8 @@ class Currencies:
             usd_currency = currencies[2]
             eur_currency = currencies[4]
 
-            currencies_usd[name]=float(usd_currency.getText(strip=True))
-            currencies_eur[name]=float(eur_currency.getText(strip=True))
+            currencies_usd[name] = float(re.sub(r'\D+$', '', usd_currency.getText(strip=True)))
+            currencies_eur[name] = float(re.sub(r'\D+$', '', eur_currency.getText(strip=True)))
 
         sorted_items = sorted(currencies_usd.items(), key=lambda item: item[1])
         self.usd_sorted = dict(sorted_items)

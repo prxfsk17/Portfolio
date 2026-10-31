@@ -175,14 +175,13 @@ Onliner Parser Demo
                     {% if result.price_stats.prices|length > 1 %}
                     <div class="mt-4">
                         <h6 class="mb-2">Price Distribution</h6>
-                        <div class="price-histogram"
-                             style="height: 100px; display: flex; align-items: flex-end; gap: 2px;">
+                        <div class="price-histogram">
                             {% set prices = result.price_stats.prices %}
                             {% set max_price = prices|max %}
                             {% for price in prices %}
                             {% set height = (price / max_price * 100)|int %}
                             <div class="histogram-bar bg-primary"
-                                 style="height: {{ height }}px; width: 20px;"
+                                 style="height: {{ height }}%;"
                                  title='{{ "%.2f"|format(price) }} BYN'>
                             </div>
                             {% endfor %}
@@ -199,7 +198,7 @@ Onliner Parser Demo
                 <div class="d-flex align-items-center">
                     <i class="bi bi-info-circle-fill text-info me-2"></i>
                     <small class="text-muted">
-                        Powered by Selenium WebDriver. Parsing takes 10-15 seconds.
+                        Powered by Selenium WebDriver. Parsing takes some time.
                     </small>
                 </div>
             </div>
