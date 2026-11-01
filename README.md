@@ -1,4 +1,5 @@
 # Developer Portfolio (Flask)
+![CI](https://github.com/prxfsk17/Portfolio/actions/workflows/ci.yml/badge.svg)
 
 A personal portfolio website built with Flask. It presents my background, a catalog of projects with detail pages, a contact form, and several interactive demos that run in the browser.
 
@@ -35,7 +36,7 @@ Python, Flask, Jinja2, Flask-WTF / WTForms, Requests, BeautifulSoup, Selenium, N
 
 ## Getting started
 
-Requirements: Python 3.10+; Chrome is needed only for the Onliner parser demo.
+Requirements: Python 3.11+; Chrome is needed only for the Onliner parser demo.
 
 ```bash
 git clone https://github.com/prxfsk17/Portfolio.git
@@ -48,6 +49,21 @@ python main.py
 ```
 
 Open http://127.0.0.1:5000
+
+### With Docker
+
+```bash
+cp .env.example .env    # fill in the values
+docker compose up --build
+```
+Open http://localhost:8000. The Selenium-based Onliner demo is disabled in the container (it needs a local Chrome).
+
+### Tests
+
+```bash
+pip install -r requirements-dev.txt
+pytest -q
+```
 
 ## Environment variables
 
@@ -69,8 +85,8 @@ The site starts without a `.env` file, but the contact form, currency scraper an
 
 ## Roadmap
 
-- [ ] Dockerfile and docker-compose
-- [ ] Automated tests and CI with GitHub Actions
+- [x] Dockerfile and docker-compose
+- [x] Automated tests and CI with GitHub Actions
 - [ ] Public deployment
 
 ## Author
