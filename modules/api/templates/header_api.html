@@ -61,26 +61,6 @@
                         </a>
                     </li>
                 </ul>
-
-                <!-- Cache Status Badge -->
-                <div class="ms-lg-3 mt-3 mt-lg-0">
-                    {% if cache_status == 'fresh' %}
-                    <span class="badge bg-success px-3 py-2">
-                        <i class="bi bi-check-circle me-1"></i>
-                        Cache Fresh
-                    </span>
-                    {% elif cache_status == 'stale' %}
-                    <span class="badge bg-warning text-dark px-3 py-2">
-                        <i class="bi bi-exclamation-triangle me-1"></i>
-                        Cache Stale
-                    </span>
-                    {% else %}
-                    <span class="badge bg-danger px-3 py-2">
-                        <i class="bi bi-x-circle me-1"></i>
-                        No Cache
-                    </span>
-                    {% endif %}
-                </div>
             </div>
         </div>
     </nav>

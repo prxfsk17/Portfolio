@@ -25,40 +25,8 @@
 
             <!-- System Info - справа -->
             <div class="col-lg-4">
-                <h5 class="fw-bold mb-4 text-end">System Status</h5>
+                <h5 class="fw-bold mb-4 text-end">Data</h5>
                 <div class="bg-dark bg-opacity-50 p-4 rounded-3 border border-secondary">
-                    <div class="d-flex justify-content-between mb-3">
-                        <span class="text-secondary-emphasis">Cache:</span>
-                        {% if cache_status == 'fresh' %}
-                        <span class="text-success">
-                            <i class="bi bi-check-circle-fill me-1"></i>Fresh
-                        </span>
-                        {% elif cache_status == 'stale' %}
-                        <span class="text-warning">
-                            <i class="bi bi-exclamation-triangle-fill me-1"></i>Stale
-                        </span>
-                        {% else %}
-                        <span class="text-danger">
-                            <i class="bi bi-x-circle-fill me-1"></i>No Data
-                        </span>
-                        {% endif %}
-                    </div>
-
-                    <div class="d-flex justify-content-between mb-3">
-                        <span class="text-secondary-emphasis">Last Update:</span>
-                        <span class="text-light">
-                            {% if last_update %}
-                                {% if last_update is string %}
-                                    {{ last_update.split('T')[1][:8] if 'T' in last_update else last_update }}
-                                {% else %}
-                                    {{ last_update.strftime('%H:%M:%S') }}
-                                {% endif %}
-                            {% else %}
-                                Never
-                            {% endif %}
-                        </span>
-                    </div>
-
                     <div class="d-flex justify-content-between">
                         <span class="text-secondary-emphasis">Data source:</span>
                         <span class="text-light">API-Sports (sample data if unavailable)</span>
