@@ -1,6 +1,8 @@
 # Developer Portfolio (Flask)
 ![CI](https://github.com/prxfsk17/Portfolio/actions/workflows/ci.yml/badge.svg)
 
+**Live demo:** https://alesspy.click *(self-hosted on AWS EC2)*
+
 A personal portfolio website built with Flask. It presents my background, a catalog of projects with detail pages, a contact form, and several interactive demos that run in the browser.
 
 ## Features
@@ -78,6 +80,16 @@ pytest -q
 
 The site starts without a `.env` file, but the contact form, currency scraper and F1 live data need the values above. Without an F1 key the explorer falls back to a small built-in sample data set.
 
+## Deployment
+
+The app runs on a single AWS EC2 instance (Ubuntu 24.04, eu-central-1) as two Docker containers: the Flask app behind gunicorn and a Caddy reverse proxy that handles HTTPS (Let's Encrypt) for the custom domain.
+
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+The Selenium-based Onliner demo is disabled in the hosted version (it needs a local Chrome).
+
 ## Known limitations
 
 - The Onliner parser depends on the current markup of the target site (XPath selectors) and may break when the site changes.
@@ -87,7 +99,7 @@ The site starts without a `.env` file, but the contact form, currency scraper an
 
 - [x] Dockerfile and docker-compose
 - [x] Automated tests and CI with GitHub Actions
-- [ ] Public deployment
+- [x] Public deployment
 
 ## Author
 
