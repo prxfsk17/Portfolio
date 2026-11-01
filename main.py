@@ -233,7 +233,10 @@ def automation():
     if request.method == "POST":
         query = request.form.get("product", "").strip()
 
-        if not query:
+        if os.getenv("DISABLE_SELENIUM_DEMO") == "1":
+            error = ("This demo needs a local Chrome browser, so it is disabled "
+                     "in the hosted version. See the GitHub repository.")
+        elif not query:
             error = "Please enter a product name"
         else:
             try:
